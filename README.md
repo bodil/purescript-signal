@@ -2,7 +2,7 @@
 
 Early draft. Seems to work.
 
-See also [http://library.elm-lang.org/catalog/elm-lang-Elm/0.12.3/Signal](the Elm Signal documentation).
+See also [the Elm Signal documentation](http://library.elm-lang.org/catalog/elm-lang-Elm/0.12.3/Signal).
 
 ## Module Signal
 
