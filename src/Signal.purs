@@ -91,15 +91,20 @@ foreign import sampleOn
   \  };\
   \}" :: forall a b. Signal a -> Signal b -> Signal b
 
--- TODO
--- foreign import distinct
---   "function distinct(sig) {\
---   \  var val = sig.get();\
---   \  var out = constant(val);\
---   \  sig.subscribe(function(val) {\
---   \    console.log(val);\
---   \  });\
---   \}" :: forall a. (Eq a) => Signal a -> Signal a
+foreign import distinct
+  "function distinct(eq) {\
+  \  return function(sig) {\
+  \    var val = sig.get();\
+  \    var out = constant(val);\
+  \    sig.subscribe(function(newval) {\
+  \      if (eq['/='](val, newval)) {\
+  \        val = newval;\
+  \        out.set(val);\
+  \      }\
+  \    });\
+  \    return out;\
+  \  };\
+  \}" :: forall a. (Eq a) => Signal a -> Signal a
 
 foreign import runSignal
   "function runSignal(sig) {\
