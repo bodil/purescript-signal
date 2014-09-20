@@ -41,20 +41,6 @@ foreign import applySig
   \  };\
   \}" :: forall a b. Signal (a -> b) -> Signal a -> Signal b
 
-foreign import bindSig
-  "function bindSig(sig) {\
-  \  return function(fun) {\
-  \    var sigp = fun(sig.get());\
-  \    var out = constant(sigp.get());\
-  \    var moar = function(sigp) {\
-  \      out.set(sigp.get());\
-  \      sigp.subscribe(out.set);\
-  \    };\
-  \    sig.subscribe(moar);\
-  \    return out;\
-  \  };\
-  \}" :: forall a b. Signal a -> (a -> Signal b) -> Signal b
-
 foreign import merge
   "function merge(sig1) {\
   \  return function(sig2) {\
@@ -133,11 +119,6 @@ instance applySignal :: Apply Signal where
 
 instance applicativeSignal :: Applicative Signal where
   pure = constant
-
-instance bindSignal :: Bind Signal where
-  (>>=) = bindSig
-
-instance monadSignal :: Monad Signal
 
 instance semigroupSignal :: Semigroup (Signal a) where
   (<>) = merge
