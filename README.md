@@ -17,11 +17,7 @@ See also [the Elm Signal documentation](http://library.elm-lang.org/catalog/elm-
 
     instance applySignal :: Apply Signal
 
-    instance bindSignal :: Bind Signal
-
     instance functorSignal :: Functor Signal
-
-    instance monadSignal :: Monad Signal
 
     instance semigroupSignal :: Semigroup (Signal a)
 
@@ -35,8 +31,6 @@ See also [the Elm Signal documentation](http://library.elm-lang.org/catalog/elm-
     (~>) :: forall f a b. (Functor f) => f a -> (a -> b) -> f b
 
     applySig :: forall a b. Signal (a -> b) -> Signal a -> Signal b
-
-    bindSig :: forall a b. Signal a -> (a -> Signal b) -> Signal b
 
     constant :: forall a. a -> Signal a
 
