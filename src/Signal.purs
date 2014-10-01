@@ -55,10 +55,10 @@ foreign import foldp
   "function foldp(fun) {\
   \  return function(seed) {\
   \    return function(sig) {\
-  \      var acc = fun(sig.get(), seed);\
+  \      var acc = fun(sig.get())(seed);\
   \      var out = constant(acc);\
   \      sig.subscribe(function(val) {\
-  \        acc = fun(val, acc);\
+  \        acc = fun(val)(acc);\
   \        out.set(acc);\
   \      });\
   \      return out;\
