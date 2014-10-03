@@ -41,6 +41,5 @@ foreign import now
   \          (process && process.hrtime && function() {\
   \            var t = process.hrtime();\
   \            return (t[0] * 1e9 + t[1]) / 1e6;\
-  \          }) ||\
-  \          function() { return Date.now(); });\
+  \          }) || Date.now).call(perf);\
   \}" :: forall e. Eff (dom :: DOM | e) Time
