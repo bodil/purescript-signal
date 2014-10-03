@@ -111,13 +111,13 @@ foreign import unwrap """
     };
   }""" :: forall e a. Signal (Eff e a) -> Eff e (Signal a)
 
-foreign import snoop
-  "function snoop(sig) {\
-  \  return function() {\
-  \    sig.subscribe(function(val) {console.log(val);});\
-  \    return sig;\
-  \  };\
-  \}" :: forall e a. Signal a -> Eff e (Signal a)
+foreign import snoop """
+  function snoop(sig) {
+    return function() {
+      sig.subscribe(function(val) {console.log(val);});
+      return sig;
+    };
+  }""" :: forall e a. Signal a -> Eff e (Signal a)
 
 instance functorSignal :: Functor Signal where
   (<$>) = lift
