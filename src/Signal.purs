@@ -1,4 +1,18 @@
-module Signal where
+module Signal
+  ( Signal(..)
+  , constant
+  , lift
+  , applySig
+  , merge
+  , foldp
+  , sampleOn
+  , distinct
+  , runSignal
+  , unwrap
+  , (<~)
+  , (~>)
+  , (~)
+  ) where
 
 import Control.Monad.Eff
 
@@ -6,110 +20,123 @@ foreign import data Signal :: * -> *
 
 foreign import constant """
   function constant(initial) {
-      var subs = [];
-      var val = initial;
-      var sig = {
-        subscribe: function(sub) {
-          subs.push(sub);
-        },
-        get: function() { return val; },
-        set: function(newval) {
-          val = newval;
-          subs.forEach(function(sub) { sub(newval); });
-        }
-      };
-      return sig;
+    var subs = [];
+    var val = initial;
+    var sig = {
+      subscribe: function(sub) {
+        subs.push(sub);
+      },
+      get: function() { return val; },
+      set: function(newval) {
+        val = newval;
+        subs.forEach(function(sub) { sub(newval); });
+      }
+    };
+    return sig;
   }""" :: forall a. a -> Signal a
 
-foreign import lift """
-  function lift(fun) {
-    return function(sig) {
-      var out = constant(fun(sig.get()));
-      sig.subscribe(function(val) { out.set(fun(val)); });
-      return out;
-    };
-  }""" :: forall a b. (a -> b) -> Signal a -> Signal b
+foreign import liftP """
+  function liftP(constant) {
+  return function(fun) {
+  return function(sig) {
+    var out = constant(fun(sig.get()));
+    sig.subscribe(function(val) { out.set(fun(val)); });
+    return out;
+  };};}""" :: forall a b c. (c -> Signal c) -> (a -> b) -> Signal a -> Signal b
 
-foreign import applySig """
-  function applySig(fun) {
-    return function(sig) {
-      var out = constant(fun.get()(sig.get()));
-      var produce = function() { out.set(fun.get()(sig.get())); };
-      fun.subscribe(produce);
-      sig.subscribe(produce);
-      return out;
-    };
-  }""" :: forall a b. Signal (a -> b) -> Signal a -> Signal b
+lift = liftP constant
 
-foreign import merge """
-  function merge(sig1) {
-    return function(sig2) {
-      var out = constant(sig1.get());
-      sig1.subscribe(out.set);
-      sig2.subscribe(out.set);
-      return out;
-    };
-  }""" :: forall a. Signal a -> Signal a -> Signal a
+foreign import applySigP """
+  function applySigP(constant) {
+  return function(fun) {
+  return function(sig) {
+    var out = constant(fun.get()(sig.get()));
+    var produce = function() { out.set(fun.get()(sig.get())); };
+    fun.subscribe(produce);
+    sig.subscribe(produce);
+    return out;
+  };};}""" :: forall a b c. (c -> Signal c) -> Signal (a -> b) -> Signal a -> Signal b
 
-foreign import foldp """
-  function foldp(fun) {
-    return function(seed) {
-      return function(sig) {
-        var acc = fun(sig.get())(seed);
-        var out = constant(acc);
-        sig.subscribe(function(val) {
-          acc = fun(val)(acc);
-          out.set(acc);
-        });
-        return out;
-      };
-    };
-  }""" :: forall a b. (a -> b -> b) -> b -> Signal a -> Signal b
+applySig = applySigP constant
 
-foreign import sampleOn """
-  function sampleOn(sig1) {
-    return function(sig2) {
-      var out = constant(sig2.get());
-      sig1.subscribe(function() {
-        out.set(sig2.get());
-      });
-      return out;
-    };
-  }""" :: forall a b. Signal a -> Signal b -> Signal b
+foreign import mergeP """
+  function mergeP(consant) {
+  return function(sig1) {
+  return function(sig2) {
+    var out = constant(sig1.get());
+    sig1.subscribe(out.set);
+    sig2.subscribe(out.set);
+    return out;
+  };};}""" :: forall a c. (c -> Signal c) -> Signal a -> Signal a -> Signal a
 
-foreign import distinct """
-  function distinct(eq) {
-    return function(sig) {
-      var val = sig.get();
-      var out = constant(val);
-      sig.subscribe(function(newval) {
-        if (eq['/='](val, newval)) {
-          val = newval;
-          out.set(val);
-        }
-      });
-      return out;
-    };
-  }""" :: forall a. (Eq a) => Signal a -> Signal a
+merge = mergeP constant
+
+foreign import foldpP """
+  function foldpP(constant) {
+  return function(fun) {
+  return function(seed) {
+  return function(sig) {
+    var acc = fun(sig.get())(seed);
+    var out = constant(acc);
+    sig.subscribe(function(val) {
+      acc = fun(val)(acc);
+      out.set(acc);
+    });
+    return out;
+  };};};}""" :: forall a b c. (c -> Signal c) -> (a -> b -> b) -> b -> Signal a -> Signal b
+
+foldp = foldpP constant
+
+foreign import sampleOnP """
+  function sampleOnP(constant) {
+  return function(sig1) {
+  return function(sig2) {
+    var out = constant(sig2.get());
+    sig1.subscribe(function() {
+      out.set(sig2.get());
+    });
+    return out;
+  };};}""" :: forall a b c. (c -> Signal c) -> Signal a -> Signal b -> Signal b
+
+sampleOn = sampleOnP constant
+
+foreign import distinctP """
+  function distinctP(constant) {
+  return function(eq) {
+  return function(sig) {
+    var val = sig.get();
+    var out = constant(val);
+    sig.subscribe(function(newval) {
+      if (eq['/='](val, newval)) {
+        val = newval;
+        out.set(val);
+      }
+    });
+    return out;
+  };};}""" :: forall a c. (Eq a) => (c -> Signal c) -> Signal a -> Signal a
+
+distinct :: forall a. (Eq a) => Signal a -> Signal a
+distinct = distinctP constant
 
 foreign import runSignal """
   function runSignal(sig) {
-    return function() {
-      sig.subscribe(function(val) {
-        val();
-      });
-      return {};
-    };
-  }""" :: forall e. Signal (Eff e Unit) -> Eff e Unit
+  return function() {
+    sig.subscribe(function(val) {
+      val();
+    });
+    return {};
+  };}""" :: forall e. Signal (Eff e Unit) -> Eff e Unit
 
-foreign import unwrap """
-  function unwrap(sig) {
-    return function() {
-      var out = constant(sig.get()());
-      sig.subscribe(function(val) { out.set(val()); });
-      return out;
-    };
-  }""" :: forall e a. Signal (Eff e a) -> Eff e (Signal a)
+foreign import unwrapP """
+  function unwrapP(constant) {
+  return function(sig) {
+  return function() {
+    var out = constant(sig.get()());
+    sig.subscribe(function(val) { out.set(val()); });
+    return out;
+  };};}""" :: forall e a c. (c -> Signal c) -> Signal (Eff e a) -> Eff e (Signal a)
+
+unwrap = unwrapP constant
 
 instance functorSignal :: Functor Signal where
   (<$>) = lift

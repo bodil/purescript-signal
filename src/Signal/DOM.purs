@@ -1,42 +1,44 @@
-module Signal.DOM (
-  keyPressed,
-  mousePos,
-  animationFrame
+module Signal.DOM
+  ( animationFrame
+  , keyPressed
+  , mousePos
   ) where
 
-import Control.Monad.Eff
-import Signal
-import Signal.Time
-import DOM
+import Control.Monad.Eff (Eff(..))
 
-_constant = constant
-_now = now
+import DOM (DOM(..))
 
-foreign import keyPressed """
-  function keyPressed(keyCode) {
-    return function() {
-      var out = _constant(false);
-      window.addEventListener('keydown', function(e) {
-        if (e.keyCode === keyCode) out.set(true);
-      });
-      window.addEventListener('keyup', function(e) {
-        if (e.keyCode === keyCode) out.set(false);
-      });
-      return out;
-    };
-  }""" :: forall e. Number -> Eff (dom :: DOM | e) (Signal Boolean)
+import Signal (constant, Signal(..))
+import Signal.Time (now, Time(..))
 
-foreign import mousePos """
-  function mousePos() {
-    var out = _constant({x:0,y:0});
+foreign import keyPressedP """
+  function keyPressedP(constant) {
+  return function(keyCode) {
+  return function() {
+    var out = constant(false);
+    window.addEventListener('keydown', function(e) {
+      if (e.keyCode === keyCode) out.set(true);
+    });
+    window.addEventListener('keyup', function(e) {
+      if (e.keyCode === keyCode) out.set(false);
+    });
+    return out;
+  };};}""" :: forall e c. (c -> Signal c) -> Number -> Eff (dom :: DOM | e) (Signal Boolean)
+
+keyPressed = keyPressedP constant
+
+foreign import mousePosP """
+  function mousePosP(constant) {
+  return function() {
+    var out = constant({x:0,y:0});
     window.addEventListener('mousemove', function(e) {
       if (e.pageX !== undefined && e.pageY !== undefined) {
         out.set({x:e.pageX, y: e.pageY});
       } else if (e.clientX !== undefined && e.clientY !== undefined) {
         out.set({
-          x: e.clientX + document.body.scrollLeft + 
+          x: e.clientX + document.body.scrollLeft +
              document.documentElement.scrollLeft,
-          y: e.clientY + document.body.scrollTop + 
+          y: e.clientY + document.body.scrollTop +
              document.documentElement.scrollTop
         });
       } else {
@@ -44,10 +46,13 @@ foreign import mousePos """
       }
     });
     return out;
-  }""" :: forall e. Eff (dom :: DOM | e) (Signal { x :: Number, y :: Number })
+  };}""" :: forall e c. (c -> Signal c) -> Eff (dom :: DOM | e) (Signal { x :: Number, y :: Number })
 
-foreign import animationFrame """
-  function animationFrame() {
+mousePos = mousePosP constant
+
+foreign import animationFrameP """
+  function animationFrameP(constant) {
+  return function() {
     var requestAnimFrame, cancelAnimFrame;
     if (window.requestAnimationFrame) {
       requestAnimFrame = window.requestAnimationFrame;
@@ -68,9 +73,11 @@ foreign import animationFrame """
       requestAnimFrame = function(cb) {setTimeout(function() {cb(_now())}, 1000/60)};
       cancelAnimFrame = window.clearTimeout;
     }
-    var out = _constant(Date.now());
+    var out = constant(Date.now());
     requestAnimFrame(function tick(t) {
       out.set(t); requestAnimFrame(tick);
     });
     return out;
-  }""" :: forall e. Eff (dom :: DOM | e) (Signal Time)
+  };}""" :: forall e c. (c -> Signal c) -> Eff (dom :: DOM | e) (Signal Time)
+
+animationFrame = animationFrameP constant
