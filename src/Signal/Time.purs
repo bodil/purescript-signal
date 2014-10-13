@@ -33,37 +33,32 @@ every = everyP constant
 
 foreign import delayP """
   function delayP(contant) {
-    return function(ms) {
-      return function(sig) {
-        return function() {
-          var out = constant(sig.get());
-          sig.clear();
-          sig.subscribe(function(val) {
-            setTimeout(function() {
-              out.set(val);
-            }, ms);
-          });
-          return out;
-        };
-      };
-    };
-  }""" :: forall e c. (c -> Signal c) -> Time -> Signal c -> Eff (dom :: DOM | e) (Signal c)
+  return function(ms) {
+  return function(sig) {
+  return function() {
+    var out = constant(sig.get());
+    sig.clear();
+    sig.subscribe(function(val) {
+      setTimeout(function() {
+        out.set(val);
+      }, ms);
+    });
+    return out;
+  };};};}""" :: forall e c. (c -> Signal c) -> Time -> Signal c -> Eff (dom :: DOM | e) (Signal c)
 
 delay = delayP constant
 
 foreign import onceP """
   function onceP(constant) {
-    return function(sig) {
-      return function() {
-        var out = constant(sig.get());
-        sig.subscribe(function(val) {
-          out.set(val);
-          sig.clear();
-        });
-        return out;
-      };
-    };
-  }""" :: forall e c. (c -> Signal c) -> Signal c -> Eff (dom :: DOM | e) (Signal c)
+  return function(sig) {
+  return function() {
+    var out = constant(sig.get());
+    sig.subscribe(function(val) {
+      out.set(val);
+      sig.clear();
+    });
+    return out;
+  };};}""" :: forall e c. (c -> Signal c) -> Signal c -> Eff (dom :: DOM | e) (Signal c)
 
 once = onceP constant
 
