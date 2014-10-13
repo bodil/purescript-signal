@@ -37,7 +37,6 @@ foreign import delayP """
   return function(sig) {
   return function() {
     var out = constant(sig.get());
-    sig.clear();
     sig.subscribe(function(val) {
       setTimeout(function() {
         out.set(val);
