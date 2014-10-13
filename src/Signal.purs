@@ -26,6 +26,9 @@ foreign import constant """
       subscribe: function(sub) {
         subs.push(sub);
       },
+      clear: function() {
+        subs = [];
+      },
       get: function() { return val; },
       set: function(newval) {
         val = newval;
