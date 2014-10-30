@@ -9,7 +9,7 @@ module Signal.Time
 import Control.Monad.Eff (Eff(..))
 
 import Signal (constant, Signal(..))
-import DOM (DOM(..))
+import Control.Reactive.Timer (Timer(..))
 
 type Time = Number
 
@@ -43,4 +43,4 @@ foreign import now """
       }) ||
       Date.now
     ).call(perf);
-  }""" :: forall e. Eff (dom :: DOM | e) Time
+  }""" :: forall e. Eff (timer :: Timer | e) Time
