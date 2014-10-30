@@ -21,15 +21,16 @@ second = 1000
 
 foreign import everyP """
   function everyP(constant) {
+  return function(now) {
   return function(t) {
     var out = constant(now());
     setInterval(function() {
       out.set(now());
     }, t);
     return out;
-  };}""" :: forall c. (c -> Signal c) -> Time -> Signal Time
+  };};}""" :: forall c e. (c -> Signal c) -> (Eff (timer :: Timer | e) Time) -> Time -> Signal Time
 
-every = everyP constant
+every = everyP constant now
 
 -- |Returns the number of milliseconds since an arbitrary, but constant, time in the past.
 foreign import now """
