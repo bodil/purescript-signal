@@ -7,6 +7,7 @@ module Signal
   , foldp
   , sampleOn
   , distinct
+  , zip
   , runSignal
   , unwrap
   , (<~)
@@ -15,6 +16,8 @@ module Signal
   ) where
 
 import Control.Monad.Eff
+import Data.Function
+import Data.Tuple(Tuple(..))
 
 foreign import data Signal :: * -> *
 
@@ -36,46 +39,37 @@ foreign import constant """
   }""" :: forall a. a -> Signal a
 
 foreign import liftP """
-  function liftP(constant) {
-  return function(fun) {
-  return function(sig) {
+  function liftP(constant, fun, sig) {
     var out = constant(fun(sig.get()));
     sig.subscribe(function(val) { out.set(fun(val)); });
     return out;
-  };};}""" :: forall a b c. (c -> Signal c) -> (a -> b) -> Signal a -> Signal b
+  }""" :: forall a b c. Fn3 (c -> Signal c) (a -> b) (Signal a) (Signal b)
 
-lift = liftP constant
+lift = runFn3 liftP constant
 
 foreign import applySigP """
-  function applySigP(constant) {
-  return function(fun) {
-  return function(sig) {
+  function applySigP(constant, fun, sig) {
     var out = constant(fun.get()(sig.get()));
     var produce = function() { out.set(fun.get()(sig.get())); };
     fun.subscribe(produce);
     sig.subscribe(produce);
     return out;
-  };};}""" :: forall a b c. (c -> Signal c) -> Signal (a -> b) -> Signal a -> Signal b
+  }""" :: forall a b c. Fn3 (c -> Signal c) (Signal (a -> b)) (Signal a) (Signal b)
 
-applySig = applySigP constant
+applySig = runFn3 applySigP constant
 
 foreign import mergeP """
-  function mergeP(consant) {
-  return function(sig1) {
-  return function(sig2) {
+  function mergeP(constant, sig1, sig2) {
     var out = constant(sig1.get());
     sig1.subscribe(out.set);
     sig2.subscribe(out.set);
     return out;
-  };};}""" :: forall a c. (c -> Signal c) -> Signal a -> Signal a -> Signal a
+  }""" :: forall a c. Fn3 (c -> Signal c) (Signal a) (Signal a) (Signal a)
 
-merge = mergeP constant
+merge = runFn3 mergeP constant
 
 foreign import foldpP """
-  function foldpP(constant) {
-  return function(fun) {
-  return function(seed) {
-  return function(sig) {
+  function foldpP(constant, fun, seed, sig) {
     var acc = fun(sig.get())(seed);
     var out = constant(acc);
     sig.subscribe(function(val) {
@@ -83,22 +77,20 @@ foreign import foldpP """
       out.set(acc);
     });
     return out;
-  };};};}""" :: forall a b c. (c -> Signal c) -> (a -> b -> b) -> b -> Signal a -> Signal b
+  }""" :: forall a b c. Fn4 (c -> Signal c) (a -> b -> b) b (Signal a) (Signal b)
 
-foldp = foldpP constant
+foldp = runFn4 foldpP constant
 
 foreign import sampleOnP """
-  function sampleOnP(constant) {
-  return function(sig1) {
-  return function(sig2) {
+  function sampleOnP(constant, sig1, sig2) {
     var out = constant(sig2.get());
     sig1.subscribe(function() {
       out.set(sig2.get());
     });
     return out;
-  };};}""" :: forall a b c. (c -> Signal c) -> Signal a -> Signal b -> Signal b
+  }""" :: forall a b c. Fn3 (c -> Signal c) (Signal a) (Signal b) (Signal b)
 
-sampleOn = sampleOnP constant
+sampleOn = runFn3 sampleOnP constant
 
 foreign import distinctP """
   function distinctP(constant) {
@@ -118,25 +110,44 @@ foreign import distinctP """
 distinct :: forall a. (Eq a) => Signal a -> Signal a
 distinct = distinctP constant
 
+foreign import zipP """
+  function zipP(Tuple, constant, sig1, sig2) {
+    var val1 = sig1.get(), val2 = sig2.get();
+    var out = constant(Tuple(val1)(val2));
+    sig1.subscribe(function(v) {
+      val1 = v;
+      out.set(Tuple(val1)(val2));
+    });
+    sig2.subscribe(function(v) {
+      val2 = v;
+      out.set(Tuple(val1)(val2));
+    });
+    return out;
+  }""" :: forall a b c. Fn4 (a -> b -> Tuple a b) (c -> Signal c) (Signal a) (Signal b) (Signal (Tuple a b))
+
+zip :: forall a b. Signal a -> Signal b -> Signal (Tuple a b)
+zip a b = runFn4 zipP Tuple constant a b
+
 foreign import runSignal """
   function runSignal(sig) {
-  return function() {
-    sig.subscribe(function(val) {
-      val();
-    });
-    return {};
-  };}""" :: forall e. Signal (Eff e Unit) -> Eff e Unit
+    return function() {
+      sig.subscribe(function(val) {
+        val();
+      });
+      return {};
+    };
+  }""" :: forall e. Signal (Eff e Unit) -> Eff e Unit
 
 foreign import unwrapP """
-  function unwrapP(constant) {
-  return function(sig) {
-  return function() {
-    var out = constant(sig.get()());
-    sig.subscribe(function(val) { out.set(val()); });
-    return out;
-  };};}""" :: forall e a c. (c -> Signal c) -> Signal (Eff e a) -> Eff e (Signal a)
+  function unwrapP(constant, sig) {
+    return function() {
+      var out = constant(sig.get()());
+      sig.subscribe(function(val) { out.set(val()); });
+      return out;
+    };
+  }""" :: forall e a c. Fn2 (c -> Signal c) (Signal (Eff e a)) (Eff e (Signal a))
 
-unwrap = unwrapP constant
+unwrap = runFn2 unwrapP constant
 
 instance functorSignal :: Functor Signal where
   (<$>) = lift
