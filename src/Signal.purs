@@ -147,6 +147,7 @@ foreign import unwrapP """
     };
   }""" :: forall e a c. Fn2 (c -> Signal c) (Signal (Eff e a)) (Eff e (Signal a))
 
+unwrap :: forall a e. Signal (Eff e a) -> Eff e (Signal a)
 unwrap = runFn2 unwrapP constant
 
 instance functorSignal :: Functor Signal where
