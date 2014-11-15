@@ -93,13 +93,13 @@ foreign import sampleOnP """
 sampleOn = runFn3 sampleOnP constant
 
 foreign import distinctP """
-  function distinctP(constant) {
-  return function(eq) {
+  function distinctP(eq) {
+  return function(constant) {
   return function(sig) {
     var val = sig.get();
     var out = constant(val);
     sig.subscribe(function(newval) {
-      if (eq['/='](val, newval)) {
+      if (eq['/='](val)(newval)) {
         val = newval;
         out.set(val);
       }
