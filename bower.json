@@ -1,8 +1,8 @@
 {
   "name": "purescript-signal",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "dependencies": {
-    "purescript-dom": "~0.1.0",
+    "purescript-dom": "~0.1.1",
     "purescript-timers": "~0.0.5",
     "purescript-refs": "~0.1.1"
   },
