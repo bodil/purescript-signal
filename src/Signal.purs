@@ -17,7 +17,6 @@ module Signal
 
 import Control.Monad.Eff
 import Data.Function
-import Data.Tuple(Tuple(..))
 
 foreign import data Signal :: * -> *
 
@@ -112,22 +111,22 @@ distinct :: forall a. (Eq a) => Signal a -> Signal a
 distinct = distinctP constant
 
 foreign import zipP """
-  function zipP(Tuple, constant, sig1, sig2) {
+  function zipP(constant, f, sig1, sig2) {
     var val1 = sig1.get(), val2 = sig2.get();
-    var out = constant(Tuple(val1)(val2));
+    var out = constant(f(val1)(val2));
     sig1.subscribe(function(v) {
       val1 = v;
-      out.set(Tuple(val1)(val2));
+      out.set(f(val1)(val2));
     });
     sig2.subscribe(function(v) {
       val2 = v;
-      out.set(Tuple(val1)(val2));
+      out.set(f(val1)(val2));
     });
     return out;
-  }""" :: forall a b c. Fn4 (a -> b -> Tuple a b) (c -> Signal c) (Signal a) (Signal b) (Signal (Tuple a b))
+  }""" :: forall a b c d. Fn4 (d -> Signal d) (a -> b -> c) (Signal a) (Signal b) (Signal c)
 
-zip :: forall a b. Signal a -> Signal b -> Signal (Tuple a b)
-zip a b = runFn4 zipP Tuple constant a b
+zip :: forall a b c. (a -> b -> c) -> Signal a -> Signal b -> Signal c
+zip f a b = runFn4 zipP constant f a b
 
 foreign import runSignal """
   function runSignal(sig) {
