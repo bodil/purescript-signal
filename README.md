@@ -46,16 +46,24 @@ See also [the Elm Signal documentation](http://library.elm-lang.org/catalog/elm-
 
     unwrap :: forall e a. Signal (Eff e a) -> Eff e (Signal a)
 
+    zip :: forall a b c. (a -> b -> c) -> Signal a -> Signal b -> Signal c
+
 
 ## Module Signal.DOM
 
 ### Values
 
-    animationFrame :: forall e. Eff (dom :: DOM | e) (Signal Time)
+    animationFrame :: forall e. Eff (timer :: Timer, dom :: DOM | e) (Signal Time)
 
     keyPressed :: forall e. Number -> Eff (dom :: DOM | e) (Signal Boolean)
 
-    mousePos :: forall e. Eff (dom :: DOM | e) (Signal { y :: Number, x :: Number })
+    mouseButton :: forall e. Number -> Eff (dom :: DOM | e) (Signal Boolean)
+
+    mousePos :: forall e. Eff (dom :: DOM | e) (Signal CoordinatePair)
+
+    tap :: forall e. Eff (dom :: DOM | e) (Signal Boolean)
+
+    touch :: forall e. Eff (dom :: DOM | e) (Signal [Touch])
 
 
 ## Module Signal.Time
@@ -71,6 +79,6 @@ See also [the Elm Signal documentation](http://library.elm-lang.org/catalog/elm-
 
     millisecond :: Time
 
-    now :: forall e. Eff (dom :: DOM | e) Time
+    now :: forall e. Eff (timer :: Timer | e) Time
 
     second :: Time
