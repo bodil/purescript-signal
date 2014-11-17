@@ -71,7 +71,7 @@ merge = runFn3 mergeP constant
 
 foreign import foldpP """
   function foldpP(constant, fun, seed, sig) {
-    var acc = fun(sig.get())(seed);
+    var acc = seed;
     var out = constant(acc);
     sig.subscribe(function(val) {
       acc = fun(val)(acc);
