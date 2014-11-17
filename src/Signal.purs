@@ -28,6 +28,7 @@ foreign import constant """
     var sig = {
       subscribe: function(sub) {
         subs.push(sub);
+        sub(val);
       },
       get: function() { return val; },
       set: function(newval) {
