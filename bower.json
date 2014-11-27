@@ -1,13 +1,13 @@
 {
   "name": "purescript-signal",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "dependencies": {
     "purescript-dom": "~0.1.1",
-    "purescript-timers": "0.0.6",
+    "purescript-timers": "0.0.7",
     "purescript-refs": "~0.1.1"
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "purescript-test-unit": "~1.1.2"
+    "purescript-test-unit": "~1.1.4"
   }
 }
