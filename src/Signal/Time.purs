@@ -9,7 +9,7 @@ module Signal.Time
 import Control.Monad.Eff (Eff(..))
 
 import Signal (constant, Signal(..))
-import Control.Reactive.Timer (Timer(..))
+import Control.Timer (Timer(..))
 
 type Time = Number
 

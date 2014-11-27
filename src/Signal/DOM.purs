@@ -10,7 +10,7 @@ module Signal.DOM
   ) where
 
 import Control.Monad.Eff (Eff(..))
-import Control.Reactive.Timer (Timer(..))
+import Control.Timer (Timer(..))
 import Data.Function
 import DOM (DOM(..))
 import Signal (constant, Signal(..), (~>), unwrap)

@@ -4,7 +4,7 @@ module Test.Signal
   ) where
 
 import Control.Monad.Eff.Ref
-import Control.Reactive.Timer(Timer(..))
+import Control.Timer(Timer(..))
 import Data.Function
 import Signal
 import Test.Unit
