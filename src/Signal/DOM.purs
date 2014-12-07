@@ -45,6 +45,7 @@ foreign import mouseButtonP """
       window.addEventListener("mouseup", function(e) {
         if (e.button === button) out.set(false);
       });
+      return out;
     };
   }""" :: forall e c. Fn2 (c -> Signal c) Number (Eff (dom :: DOM | e) (Signal Boolean))
 
