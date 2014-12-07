@@ -7,6 +7,7 @@ module Signal
   , foldp
   , sampleOn
   , distinct
+  , distinct'
   , zip
   , runSignal
   , unwrap
@@ -109,6 +110,22 @@ foreign import distinctP """
 
 distinct :: forall a. (Eq a) => Signal a -> Signal a
 distinct = distinctP constant
+
+foreign import distinctRefP """
+  function distinctRefP(constant, sig) {
+    var val = sig.get();
+    var out = constant(val);
+    sig.subscribe(function(newval) {
+      if (val !== newval) {
+        val = newval;
+        out.set(val);
+      }
+    });
+    return out;
+  }""" :: forall a c. Fn2 (c -> Signal c) (Signal a) (Signal a)
+
+distinct' :: forall a. Signal a -> Signal a
+distinct' = runFn2 distinctRefP constant
 
 foreign import zipP """
   function zipP(constant, f, sig1, sig2) {
