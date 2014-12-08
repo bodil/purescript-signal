@@ -190,3 +190,15 @@ infixl 4 ~>
 infixl 4 ~
 (~) :: forall f a b. (Apply f) => f (a -> b) -> f a -> f b
 (~) = (<*>)
+
+lift2 :: forall a b c. (a -> b -> c) -> Signal a -> Signal b -> Signal c
+lift2 f a b = f <~ a ~ b
+
+lift3 :: forall a b c d. (a -> b -> c -> d) -> Signal a -> Signal b -> Signal c -> Signal d
+lift3 f a b c = f <~ a ~ b ~ c
+
+lift4 :: forall a b c d e. (a -> b -> c -> d -> e) -> Signal a -> Signal b -> Signal c -> Signal d -> Signal e
+lift4 f a b c d = f <~ a ~ b ~ c ~ d
+
+lift5 :: forall a b c d e f. (a -> b -> c -> d -> e -> f) -> Signal a -> Signal b -> Signal c -> Signal d -> Signal e -> Signal f
+lift5 f a b c d e = f <~ a ~ b ~ c ~ d ~ e
