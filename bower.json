@@ -3,7 +3,7 @@
   "version": "2.0.2",
   "dependencies": {
     "purescript-dom": "~0.1.1",
-    "purescript-timers": "0.0.7",
+    "purescript-timers": "0.0.8",
     "purescript-refs": "~0.1.1"
   },
   "license": "Apache-2.0",
