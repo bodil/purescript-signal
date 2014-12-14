@@ -7,9 +7,9 @@ module Signal.Time
   ) where
 
 import Control.Monad.Eff (Eff(..))
-
-import Signal (constant, Signal(..))
 import Control.Timer (Timer(..))
+import Data.Function
+import Signal (constant, Signal(..))
 
 type Time = Number
 
@@ -20,17 +20,16 @@ second :: Time
 second = 1000
 
 foreign import everyP """
-  function everyP(constant) {
-  return function(now) {
-  return function(t) {
+  function everyP(constant, now, t) {
     var out = constant(now());
     setInterval(function() {
       out.set(now());
     }, t);
     return out;
-  };};}""" :: forall c e. (c -> Signal c) -> (Eff (timer :: Timer | e) Time) -> Time -> Signal Time
+  }""" :: forall c e. Fn3 (c -> Signal c) (Eff (timer :: Timer | e) Time) Time (Signal Time)
 
-every = everyP constant now
+every :: Time -> Signal Time
+every = runFn3 everyP constant now
 
 -- |Returns the number of milliseconds since an arbitrary, but constant, time in the past.
 foreign import now """
