@@ -1,8 +1,15 @@
 # purescript-signal
 
-Early draft. Seems to work.
+Signal is a lightweight FRP library heavily inspired by the Elm Signal implementation. Where possible and sensible, it tries to maintain API equivalence with Elm.
 
 See also [the Elm Signal documentation](http://library.elm-lang.org/catalog/elm-lang-Elm/0.12.3/Signal).
+
+## Usage Examples
+
+* The canonical Elm Mario: https://github.com/michaelficarra/purescript-demo-mario
+* Ponies: https://github.com/bodil/purescript-is-magic
+
+# API Documentation
 
 ## Module Signal
 
@@ -30,26 +37,27 @@ See also [the Elm Signal documentation](http://library.elm-lang.org/catalog/elm-
 
     (~>) :: forall f a b. (Functor f) => f a -> (a -> b) -> f b
 
-    applySig :: forall a b. Signal (a -> b) -> Signal a -> Signal b
-
     constant :: forall a. a -> Signal a
 
-    foldp :: forall a b. (a -> b -> b) -> b -> Signal a -> Signal b
+    distinct :: forall a. (Eq a) => Signal a -> Signal a
 
-    lift :: forall a b. (a -> b) -> Signal a -> Signal b
-
-    merge :: forall a. Signal a -> Signal a -> Signal a
+    distinct' :: forall a. Signal a -> Signal a
 
     runSignal :: forall e. Signal (Eff e Unit) -> Eff e Unit
 
-    sampleOn :: forall a b. Signal a -> Signal b -> Signal b
-
-    unwrap :: forall e a. Signal (Eff e a) -> Eff e (Signal a)
+    unwrap :: forall a e. Signal (Eff e a) -> Eff e (Signal a)
 
     zip :: forall a b c. (a -> b -> c) -> Signal a -> Signal b -> Signal c
 
 
 ## Module Signal.DOM
+
+### Types
+
+    type CoordinatePair = { y :: Number, x :: Number }
+
+    type Touch = { force :: Number, rotationAngle :: Number, radiusY :: Number, radiusX :: Number, pageY :: Number, pageX :: Number, clientY :: Number, clientX :: Number, screenY :: Number, screenX :: Number, id :: String }
+
 
 ### Values
 
@@ -70,7 +78,7 @@ See also [the Elm Signal documentation](http://library.elm-lang.org/catalog/elm-
 
 ### Types
 
-    type Time  = Number
+    type Time = Number
 
 
 ### Values
