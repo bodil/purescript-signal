@@ -1,7 +1,7 @@
 module Signal
   ( Signal(..)
   , constant
-  , lift
+  , map
   , applySig
   , merge
   , foldp
@@ -39,14 +39,14 @@ foreign import constant """
     return sig;
   }""" :: forall a. a -> Signal a
 
-foreign import liftP """
-  function liftP(constant, fun, sig) {
+foreign import mapP """
+  function mapP(constant, fun, sig) {
     var out = constant(fun(sig.get()));
     sig.subscribe(function(val) { out.set(fun(val)); });
     return out;
   }""" :: forall a b c. Fn3 (c -> Signal c) (a -> b) (Signal a) (Signal b)
 
-lift = runFn3 liftP constant
+map = runFn3 mapP constant
 
 foreign import applySigP """
   function applySigP(constant, fun, sig) {
@@ -168,7 +168,7 @@ unwrap :: forall a e. Signal (Eff e a) -> Eff e (Signal a)
 unwrap = runFn2 unwrapP constant
 
 instance functorSignal :: Functor Signal where
-  (<$>) = lift
+  (<$>) = map
 
 instance applySignal :: Apply Signal where
   (<*>) = applySig
@@ -191,14 +191,14 @@ infixl 4 ~
 (~) :: forall f a b. (Apply f) => f (a -> b) -> f a -> f b
 (~) = (<*>)
 
-lift2 :: forall a b c. (a -> b -> c) -> Signal a -> Signal b -> Signal c
-lift2 f a b = f <~ a ~ b
+map2 :: forall a b c. (a -> b -> c) -> Signal a -> Signal b -> Signal c
+map2 f a b = f <~ a ~ b
 
-lift3 :: forall a b c d. (a -> b -> c -> d) -> Signal a -> Signal b -> Signal c -> Signal d
-lift3 f a b c = f <~ a ~ b ~ c
+map3 :: forall a b c d. (a -> b -> c -> d) -> Signal a -> Signal b -> Signal c -> Signal d
+map3 f a b c = f <~ a ~ b ~ c
 
-lift4 :: forall a b c d e. (a -> b -> c -> d -> e) -> Signal a -> Signal b -> Signal c -> Signal d -> Signal e
-lift4 f a b c d = f <~ a ~ b ~ c ~ d
+map4 :: forall a b c d e. (a -> b -> c -> d -> e) -> Signal a -> Signal b -> Signal c -> Signal d -> Signal e
+map4 f a b c d = f <~ a ~ b ~ c ~ d
 
-lift5 :: forall a b c d e f. (a -> b -> c -> d -> e -> f) -> Signal a -> Signal b -> Signal c -> Signal d -> Signal e -> Signal f
-lift5 f a b c d e = f <~ a ~ b ~ c ~ d ~ e
+map5 :: forall a b c d e f. (a -> b -> c -> d -> e -> f) -> Signal a -> Signal b -> Signal c -> Signal d -> Signal e -> Signal f
+map5 f a b c d e = f <~ a ~ b ~ c ~ d ~ e
