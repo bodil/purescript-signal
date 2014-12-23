@@ -64,9 +64,9 @@ See also [the Elm Signal documentation](http://library.elm-lang.org/catalog/elm-
 
 ### Types
 
-    type CoordinatePair  = { y :: Number, x :: Number }
+    type CoordinatePair = { y :: Number, x :: Number }
 
-    type Touch  = { force :: Number, rotationAngle :: Number, radiusY :: Number, radiusX :: Number, pageY :: Number, pageX :: Number, clientY :: Number, clientX :: Number, screenY :: Number, screenX :: Number, id :: String }
+    type Touch = { force :: Number, rotationAngle :: Number, radiusY :: Number, radiusX :: Number, pageY :: Number, pageX :: Number, clientY :: Number, clientX :: Number, screenY :: Number, screenX :: Number, id :: String }
 
 
 ### Values
@@ -88,7 +88,7 @@ See also [the Elm Signal documentation](http://library.elm-lang.org/catalog/elm-
 
 ### Types
 
-    type Time  = Number
+    type Time = Number
 
 
 ### Values
