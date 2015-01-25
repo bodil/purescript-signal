@@ -11,6 +11,7 @@ module Signal
   , zip
   , runSignal
   , unwrap
+  , keepIf
   , (<~)
   , (~>)
   , (~)
@@ -166,6 +167,16 @@ foreign import unwrapP """
 
 unwrap :: forall a e. Signal (Eff e a) -> Eff e (Signal a)
 unwrap = runFn2 unwrapP constant
+
+foreign import keepIfP """
+  function keepIfP(constant, fn, seed, sig) {
+    var out = constant(fn(sig.get()) ? sig.get() : seed);
+    sig.subscribe(function(val) { if (fn(val)) out.set(val); });
+    return out;
+  }""" :: forall a c. Fn4 (c -> Signal c) (a -> Boolean) a (Signal a) (Signal a)
+
+keepIf :: forall a. (a -> Boolean) -> a -> Signal a -> Signal a
+keepIf = runFn4 keepIfP constant
 
 instance functorSignal :: Functor Signal where
   (<$>) = lift
