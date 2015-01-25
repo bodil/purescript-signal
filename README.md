@@ -37,13 +37,23 @@ See also [the Elm Signal documentation](http://library.elm-lang.org/catalog/elm-
 
     (~>) :: forall f a b. (Functor f) => f a -> (a -> b) -> f b
 
+    applySig :: forall a b. Signal (a -> b) -> Signal a -> Signal b
+
     constant :: forall a. a -> Signal a
 
     distinct :: forall a. (Eq a) => Signal a -> Signal a
 
     distinct' :: forall a. Signal a -> Signal a
 
+    foldp :: forall a b. (a -> b -> b) -> b -> Signal a -> Signal b
+
+    map :: forall a b. (a -> b) -> Signal a -> Signal b
+
+    merge :: forall a. Signal a -> Signal a -> Signal a
+
     runSignal :: forall e. Signal (Eff e Unit) -> Eff e Unit
+
+    sampleOn :: forall a b. Signal a -> Signal b -> Signal b
 
     unwrap :: forall a e. Signal (Eff e a) -> Eff e (Signal a)
 
@@ -90,3 +100,6 @@ See also [the Elm Signal documentation](http://library.elm-lang.org/catalog/elm-
     now :: forall e. Eff (timer :: Timer | e) Time
 
     second :: Time
+
+
+

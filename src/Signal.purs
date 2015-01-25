@@ -46,6 +46,7 @@ foreign import mapP """
     return out;
   }""" :: forall a b c. Fn3 (c -> Signal c) (a -> b) (Signal a) (Signal b)
 
+map :: forall a b. (a -> b) -> Signal a -> Signal b
 map = runFn3 mapP constant
 
 foreign import applySigP """
@@ -57,6 +58,7 @@ foreign import applySigP """
     return out;
   }""" :: forall a b c. Fn3 (c -> Signal c) (Signal (a -> b)) (Signal a) (Signal b)
 
+applySig :: forall a b. Signal (a -> b) -> Signal a -> Signal b
 applySig = runFn3 applySigP constant
 
 foreign import mergeP """
@@ -67,6 +69,7 @@ foreign import mergeP """
     return out;
   }""" :: forall a c. Fn3 (c -> Signal c) (Signal a) (Signal a) (Signal a)
 
+merge :: forall a. Signal a -> Signal a -> Signal a
 merge = runFn3 mergeP constant
 
 foreign import foldpP """
@@ -80,6 +83,7 @@ foreign import foldpP """
     return out;
   }""" :: forall a b c. Fn4 (c -> Signal c) (a -> b -> b) b (Signal a) (Signal b)
 
+foldp :: forall a b. (a -> b -> b) -> b -> Signal a -> Signal b
 foldp = runFn4 foldpP constant
 
 foreign import sampleOnP """
@@ -91,6 +95,7 @@ foreign import sampleOnP """
     return out;
   }""" :: forall a b c. Fn3 (c -> Signal c) (Signal a) (Signal b) (Signal b)
 
+sampleOn :: forall a b. Signal a -> Signal b -> Signal b
 sampleOn = runFn3 sampleOnP constant
 
 foreign import distinctP """
