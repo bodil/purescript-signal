@@ -3,6 +3,7 @@ module Test.Main where
 import Data.Tuple(Tuple(..))
 import Signal
 import Signal.Time
+import Signal.Channel
 import Test.Signal
 import Test.Unit
 
@@ -33,3 +34,8 @@ main = runTest do
   test "filter values with keepIf" do
     expect 50 (keepIf (\n -> n < 5) 0 $ tick 1 1 [5, 3, 8, 4]) [0, 3, 4]
 
+  test "channel subscriptions yield when we send to the channel" do
+    timeout 50 $ testFn \done -> do
+      chan <- channel 1
+      runSignal $ tick 1 1 [2, 3, 4] ~> send chan
+      expectFn (subscribe chan) [2, 3, 4] done
