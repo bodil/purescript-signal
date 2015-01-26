@@ -15,17 +15,21 @@ main = runTest do
     expect 1 (constant "foo" <> constant "bar") ["bar"]
 
   test "map function over signal" do
-    expect 5 (tick 1 1 [1, 2, 3] ~> \x -> x * 2) [2, 4, 6]
+    expect 50 (tick 1 1 [1, 2, 3] ~> \x -> x * 2) [2, 4, 6]
 
   test "sampleOn samples values from sig2 when sig1 changes" do
     expect 150 (sampleOn (every 40) $ tick 10 20 [1, 2, 3, 4, 5, 6]) [1, 3, 5, 6]
 
   test "distinct only yields when value is /= previous" do
-    expect 10 (distinct $ tick 1 1 [1, 1, 2, 2, 1, 3, 3]) [1, 2, 1, 3]
+    expect 50 (distinct $ tick 1 1 [1, 1, 2, 2, 1, 3, 3]) [1, 2, 1, 3]
 
   test "zip with Tuple yields a tuple of both signals" do
-    expect 10 (zip Tuple (tick 2 4 [1, 2, 3]) (tick 4 4 [1, 2, 3]))
+    expect 50 (zip Tuple (tick 2 4 [1, 2, 3]) (tick 4 4 [1, 2, 3]))
       [Tuple 1 1, Tuple 2 1, Tuple 2 2, Tuple 3 2, Tuple 3 3]
 
   test "sum up values with foldp" do
-    expect 10 (foldp (+) 0 $ tick 1 1 [1, 2, 3, 4, 5]) [1, 3, 6, 10, 15]
+    expect 50 (foldp (+) 0 $ tick 1 1 [1, 2, 3, 4, 5]) [1, 3, 6, 10, 15]
+
+  test "filter values with keepIf" do
+    expect 50 (keepIf (\n -> n < 5) 0 $ tick 1 1 [5, 3, 8, 4]) [0, 3, 4]
+
