@@ -34,11 +34,12 @@ every = runFn3 everyP constant now
 -- |Returns the number of milliseconds since an arbitrary, but constant, time in the past.
 foreign import now """
   function now() {
-    var perf = typeof performance !== 'undefined' ? performance : null;
+    var perf = typeof performance !== 'undefined' ? performance : null,
+        proc = typeof process !== 'undefined' ? process : null;
     return (
       perf && (perf.now || perf.webkitNow || perf.msNow || perf.oNow || perf.mozNow) ||
-      (process && process.hrtime && function() {
-        var t = process.hrtime();
+      (proc && proc.hrtime && function() {
+        var t = proc.hrtime();
         return (t[0] * 1e9 + t[1]) / 1e6;
       }) ||
       Date.now
