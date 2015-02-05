@@ -5,7 +5,9 @@ module Signal.DOM
   , touch
   , tap
   , mousePos
+  , windowDims
   , CoordinatePair(..)
+  , DimensionPair(..)
   , Touch(..)
   ) where
 
@@ -17,6 +19,7 @@ import Signal (constant, Signal(..), (~>), unwrap)
 import Signal.Time (now, Time(..))
 
 type CoordinatePair = { x :: Number, y :: Number }
+type DimensionPair  = { w :: Number, h :: Number }
 
 foreign import keyPressedP """
   function keyPressedP(constant, keyCode) {
@@ -110,6 +113,20 @@ foreign import mousePosP """
 
 mousePos :: forall e. Eff (dom :: DOM | e) (Signal CoordinatePair)
 mousePos = mousePosP constant
+
+foreign import windowDimsP """
+  function windowDimsP(constant) {
+    var out = constant({ w: window.innerWidth, h: innerHeight });
+    window.addEventListener("resize", function() {
+       out.set({ w: window.innerWidth, h: window.innerHeight });
+    });
+    return function() {
+      return out;
+    }
+  }""" :: forall e c. (c -> Signal c) -> Eff (dom :: DOM | e) (Signal DimensionPair)
+
+windowDims :: forall e. Eff (dom :: DOM | e) (Signal DimensionPair)
+windowDims = windowDimsP constant
 
 foreign import animationFrameP """
   function animationFrameP(constant, now) {
