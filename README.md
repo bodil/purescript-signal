@@ -2,7 +2,7 @@
 
 Signal is a lightweight FRP library heavily inspired by the Elm Signal implementation. Where possible and sensible, it tries to maintain API equivalence with Elm.
 
-See also [the Elm Signal documentation](http://library.elm-lang.org/catalog/elm-lang-Elm/0.12.3/Signal).
+See also [the Elm Signal documentation](http://package.elm-lang.org/packages/elm-lang/core/1.1.0/Signal).
 
 ## Documentation
 
