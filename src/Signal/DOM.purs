@@ -61,7 +61,7 @@ type Touch = { id :: String
 
 foreign import touchP """
   function touchP(constant) {
-    var out = constant(false);
+    var out = constant([]);
     function report(e) {
       var touches = [], i, l = e.touches.length;
       for (i = 0; i < l; i++) touches.push(e.touches.item(i));
