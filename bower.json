@@ -2,10 +2,9 @@
   "name": "purescript-signal",
   "version": "2.2.1",
   "dependencies": {
-    "purescript-refs": "^0.1.2",
+    "purescript-dom": "~0.1.1",
     "purescript-timers": "0.0.8",
-    "purescript-dom": "^0.1.1",
-    "purescript-asap": "^1.0.0"
+    "purescript-refs": "~0.1.2"
   },
   "license": "Apache-2.0",
   "devDependencies": {

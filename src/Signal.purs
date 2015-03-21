@@ -17,38 +17,28 @@ module Signal
   , (~)
   ) where
 
-import Control.Asap.Foreign
 import Control.Monad.Eff
 import Data.Function
 
 foreign import data Signal :: * -> *
 
-foreign import constantP """
-  function constantP(asap) {
-    return function(initial) {
-      var subs = [];
-      var val = initial;
-      var sig = {
-        subscribe: function(sub) {
-          subs.push(sub);
-          sub(val);
-        },
-        get: function() { return val; },
-        set: function(newval) {
-          asap(function() {
-            val = newval;
-            subs.forEach(function(sub) {
-              sub(newval);
-            });
-          });
-        }
-      };
-      return sig;
+foreign import constant """
+  function constant(initial) {
+    var subs = [];
+    var val = initial;
+    var sig = {
+      subscribe: function(sub) {
+        subs.push(sub);
+        sub(val);
+      },
+      get: function() { return val; },
+      set: function(newval) {
+        val = newval;
+        subs.forEach(function(sub) { sub(newval); });
+      }
     };
-  }""" :: forall a. AsapForeign -> a -> Signal a
-
-constant :: forall a. a -> Signal a
-constant = constantP asap
+    return sig;
+  }""" :: forall a. a -> Signal a
 
 foreign import mapP """
   function mapP(constant, fun, sig) {
