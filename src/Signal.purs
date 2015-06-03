@@ -133,23 +133,8 @@ foreign import distinctRefP """
 distinct' :: forall a. Signal a -> Signal a
 distinct' = runFn2 distinctRefP constant
 
-foreign import zipP """
-  function zipP(constant, f, sig1, sig2) {
-    var val1 = sig1.get(), val2 = sig2.get();
-    var out = constant(f(val1)(val2));
-    sig1.subscribe(function(v) {
-      val1 = v;
-      out.set(f(val1)(val2));
-    });
-    sig2.subscribe(function(v) {
-      val2 = v;
-      out.set(f(val1)(val2));
-    });
-    return out;
-  }""" :: forall a b c d. Fn4 (d -> Signal d) (a -> b -> c) (Signal a) (Signal b) (Signal c)
-
 zip :: forall a b c. (a -> b -> c) -> Signal a -> Signal b -> Signal c
-zip f a b = runFn4 zipP constant f a b
+zip = map2
 
 foreign import runSignal """
   function runSignal(sig) {
