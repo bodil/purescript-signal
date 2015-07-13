@@ -5,79 +5,40 @@ module Signal.DOM
   , touch
   , tap
   , mousePos
-  , CoordinatePair(..)
-  , Touch(..)
+  , CoordinatePair()
+  , Touch()
   ) where
 
 import Control.Monad.Eff (Eff(..))
-import Control.Timer (Timer(..))
-import Data.Function
+import Control.Timer (Timer())
 import DOM (DOM(..))
+import Prelude (($), bind, return)
 import Signal (constant, Signal(..), (~>), unwrap)
 import Signal.Time (now, Time(..))
 
-type CoordinatePair = { x :: Number, y :: Number }
+type CoordinatePair = { x :: Int, y :: Int }
 
-foreign import keyPressedP """
-  function keyPressedP(constant, keyCode) {
-    return function() {
-      var out = constant(false);
-      window.addEventListener("keydown", function(e) {
-        if (e.keyCode === keyCode) out.set(true);
-      });
-      window.addEventListener("keyup", function(e) {
-        if (e.keyCode === keyCode) out.set(false);
-      });
-      return out;
-    };
-  }""" :: forall e c. Fn2 (c -> Signal c) Number (Eff (dom :: DOM | e) (Signal Boolean))
+foreign import keyPressedP :: forall e c. (c -> Signal c) -> Int -> Eff (dom :: DOM | e) (Signal Boolean)
 
-keyPressed :: forall e. Number -> Eff (dom :: DOM | e) (Signal Boolean)
-keyPressed = runFn2 keyPressedP constant
+keyPressed :: forall e. Int -> Eff (dom :: DOM | e) (Signal Boolean)
+keyPressed = keyPressedP constant
 
-foreign import mouseButtonP """
-  function mouseButtonP(constant, button) {
-    return function() {
-      var out = constant(false);
-      window.addEventListener("mousedown", function(e) {
-        if (e.button === button) out.set(true);
-      });
-      window.addEventListener("mouseup", function(e) {
-        if (e.button === button) out.set(false);
-      });
-      return out;
-    };
-  }""" :: forall e c. Fn2 (c -> Signal c) Number (Eff (dom :: DOM | e) (Signal Boolean))
+foreign import mouseButtonP :: forall e c. (c -> Signal c) -> Int -> Eff (dom :: DOM | e) (Signal Boolean)
 
-mouseButton :: forall e. Number -> Eff (dom :: DOM | e) (Signal Boolean)
-mouseButton = runFn2 mouseButtonP constant
+mouseButton :: forall e. Int -> Eff (dom :: DOM | e) (Signal Boolean)
+mouseButton = mouseButtonP constant
 
 type Touch = { id :: String
-             , screenX :: Number, screenY :: Number
-             , clientX :: Number, clientY :: Number
-             , pageX :: Number, pageY :: Number
-             , radiusX :: Number, radiusY :: Number
+             , screenX :: Int, screenY :: Int
+             , clientX :: Int, clientY :: Int
+             , pageX :: Int, pageY :: Int
+             , radiusX :: Int, radiusY :: Int
              , rotationAngle :: Number, force :: Number }
 
-foreign import touchP """
-  function touchP(constant) {
-    var out = constant([]);
-    function report(e) {
-      var touches = [], i, l = e.touches.length;
-      for (i = 0; i < l; i++) touches.push(e.touches.item(i));
-      out.set(touches);
-    }
-    window.addEventListener("touchstart", report);
-    window.addEventListener("touchend", report);
-    window.addEventListener("touchmove", report);
-    window.addEventListener("touchcancel", report);
-    return function() {
-      return out;
-    };
-  }""" :: forall e c. Fn1 (c -> Signal c) (Eff (dom :: DOM | e) (Signal [Touch]))
+foreign import touchP :: forall e c. (c -> Signal c) -> Eff (dom :: DOM | e) (Signal (Array Touch))
 
-touch :: forall e. Eff (dom :: DOM | e) (Signal [Touch])
-touch = runFn1 touchP constant
+touch :: forall e. Eff (dom :: DOM | e) (Signal (Array Touch))
+touch = touchP constant
 
 tap :: forall e. Eff (dom :: DOM | e) (Signal Boolean)
 tap = do
@@ -86,61 +47,12 @@ tap = do
     [] -> false
     _ -> true
 
-foreign import mousePosP """
-  function mousePosP(constant) {
-    var out = constant({x:0,y:0});
-    window.addEventListener('mousemove', function(e) {
-      if (e.pageX !== undefined && e.pageY !== undefined) {
-        out.set({x:e.pageX, y: e.pageY});
-      } else if (e.clientX !== undefined && e.clientY !== undefined) {
-        out.set({
-          x: e.clientX + document.body.scrollLeft +
-             document.documentElement.scrollLeft,
-          y: e.clientY + document.body.scrollTop +
-             document.documentElement.scrollTop
-        });
-      } else {
-        throw new Error('Mouse event has no coordinates I recognise!');
-      }
-    });
-    return function() {
-      return out;
-    };
-  }""" :: forall e c. (c -> Signal c) -> Eff (dom :: DOM | e) (Signal CoordinatePair)
+foreign import mousePosP :: forall e c. (c -> Signal c) -> Eff (dom :: DOM | e) (Signal CoordinatePair)
 
 mousePos :: forall e. Eff (dom :: DOM | e) (Signal CoordinatePair)
 mousePos = mousePosP constant
 
-foreign import animationFrameP """
-  function animationFrameP(constant, now) {
-    return function() {
-      var requestAnimFrame, cancelAnimFrame;
-      if (window.requestAnimationFrame) {
-        requestAnimFrame = window.requestAnimationFrame;
-        cancelAnimFrame = window.cancelAnimationFrame;
-      } else if (window.mozRequestAnimationFrame) {
-        requestAnimFrame = window.mozRequestAnimationFrame;
-        cancelAnimFrame = window.mozCancelAnimationFrame;
-      } else if (window.webkitRequestAnimationFrame) {
-        requestAnimFrame = window.webkitRequestAnimationFrame;
-        cancelAnimFrame = window.webkitCancelAnimationFrame;
-      } else if (window.msRequestAnimationFrame) {
-        requestAnimFrame = window.msRequestAnimationFrame;
-        cancelAnimFrame = window.msCancelAnimationFrame;
-      } else if (window.oRequestAnimationFrame) {
-        requestAnimFrame = window.oRequestAnimationFrame;
-        cancelAnimFrame = window.oCancelAnimationFrame;
-      } else {
-        requestAnimFrame = function(cb) {setTimeout(function() {cb(now())}, 1000/60)};
-        cancelAnimFrame = window.clearTimeout;
-      }
-      var out = constant(now());
-      requestAnimFrame(function tick(t) {
-        out.set(t); requestAnimFrame(tick);
-      });
-      return out;
-    };
-  }""" :: forall e c. Fn2 (c -> Signal c) (Eff (timer :: Timer | e) Time) (Eff (dom :: DOM, timer :: Timer | e) (Signal Time))
+foreign import animationFrameP :: forall e c. (c -> Signal c) -> Eff (timer :: Timer | e) Time -> Eff (dom :: DOM, timer :: Timer | e) (Signal Time)
 
 animationFrame :: forall e. Eff (dom :: DOM, timer :: Timer | e) (Signal Time)
-animationFrame = runFn2 animationFrameP constant now
+animationFrame = animationFrameP constant now
