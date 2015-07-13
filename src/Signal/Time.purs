@@ -18,10 +18,10 @@ millisecond = 1.0
 second :: Time
 second = 1000.0
 
-foreign import everyP :: forall c e. (c -> Signal c) -> Eff (timer :: Timer | e) Time -> Time -> Signal Time
+foreign import everyP :: forall c e. (c -> Signal c) -> Time -> Signal Time
 
 every :: Time -> Signal Time
-every = everyP constant now
+every = everyP constant
 
 -- |Returns the number of milliseconds since an arbitrary, but constant, time in the past.
 foreign import now :: forall e. Eff (timer :: Timer | e) Time

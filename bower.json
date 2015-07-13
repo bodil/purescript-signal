@@ -7,5 +7,9 @@
     "purescript-prelude": "~0.1.0"
   },
   "license": "Apache-2.0",
-  "devDependencies": {}
+  "devDependencies": {
+    "purescript-functions": "~0.1.0",
+    "purescript-test-unit": "~2.0.0",
+    "purescript-lists": "~0.7.0"
+  }
 }

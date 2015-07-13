@@ -92,7 +92,7 @@ function distinctP(eq) {
       var val = sig.get();
       var out = constant(val);
       sig.subscribe(function(newval) {
-        if (eq['/='](val)(newval)) {
+        if (!eq["eq"](val)(newval)) {
           val = newval;
           out.set(val);
         }

@@ -6,39 +6,28 @@ module Test.Signal
 
 import Control.Monad.Eff
 import Control.Monad.Eff.Ref
-import Control.Timer(Timer(..))
 import Data.Function
+import Data.List (List(..), toList, fromList)
+import Prelude
 import Signal
 import Test.Unit
 
-expectFn :: forall e a. (Eq a, Show a) => Signal a -> [a] -> (TestResult -> Eff (ref :: Ref | e) Unit) -> Eff (ref :: Ref | e) Unit
+expectFn :: forall e a. (Eq a, Show a) => Signal a -> Array a -> (TestResult -> Eff (ref :: REF | e) Unit) -> Eff (ref :: REF | e) Unit
 expectFn sig vals done = do
   remaining <- newRef vals
   let getNext val = do
-        nextVals <- readRef remaining
+        nextValArray <- readRef remaining
+        let nextVals = toList nextValArray
         case nextVals of
-          (x : xs) -> do
+          Cons x xs -> do
             if x /= val then done $ failure $ "expected " ++ show x ++ " but got " ++ show val
               else case xs of
-                [] -> done success
-                _ -> writeRef remaining xs
+                Nil -> done success
+                _ -> writeRef remaining (fromList xs)
   runSignal $ sig ~> getNext
 
-expect :: forall e a. (Eq a, Show a) => Number -> Signal a -> [a] -> Assertion (timer :: Timer, ref :: Ref | e)
+expect :: forall e a. (Eq a, Show a) => Int -> Signal a -> Array a -> Assertion (timer :: Timer, ref :: REF | e)
 expect time sig vals = timeout time $ testFn $ expectFn sig vals
 
-foreign import tickP """
-  function tickP(constant, initial, interval, values) {
-    var vals = values.slice();
-    var out = constant(vals.shift());
-    if (vals.length) {
-      setTimeout(function pop() {
-        out.set(vals.shift());
-        if (vals.length) {
-          setTimeout(pop, interval);
-        }
-      }, initial);
-    }
-    return out;
-  }""" :: forall a c. Fn4 (c -> Signal c) Number Number [a] (Signal a)
+foreign import tickP :: forall a c. Fn4 (c -> Signal c) Int Int (Array a) (Signal a)
 tick = runFn4 tickP constant
