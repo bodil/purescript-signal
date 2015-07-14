@@ -41,6 +41,10 @@ main = runTest do
   test "filter values with filter" do
     expect 50 (filter (\n -> n < 5) 0 $ tick 1 1 [5, 3, 8, 4]) [0, 3, 4]
 
+  test "filter Maybe values with filterMap" do
+    expect 50 (filterMap (\n -> if n < 5 then Just n else Nothing)
+                 0 $ tick 1 1 [5, 3, 8, 4]) [0, 3, 4]
+
   test "channel subscriptions yield when we send to the channel" do
     timeout 50 $ testFn \done -> do
       chan <- channel 1

@@ -13,6 +13,7 @@ module Signal
   , runSignal
   , unwrap
   , filter
+  , filterMap
   , (<~)
   , (~>)
   , (~)
@@ -21,7 +22,7 @@ module Signal
 import Control.Monad.Eff (Eff())
 import Prelude ((<$>), (<*>), flip, Unit(), Eq, Semigroup, Functor, Applicative, Apply)
 import Data.Foldable (foldl, Foldable)
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), fromMaybe, isJust)
 
 foreign import data Signal :: * -> *
 
@@ -88,6 +89,11 @@ foreign import filterP :: forall a c. (c -> Signal c) -> (a -> Boolean) -> a -> 
 
 filter :: forall a. (a -> Boolean) -> a -> Signal a -> Signal a
 filter = filterP constant
+
+-- |Map a signal over a function which returns a `Maybe`, yielding only the
+-- |values inside `Just`s, dropping the `Nothing`s.
+filterMap :: forall a b. (a -> Maybe b) -> b -> Signal a -> Signal b
+filterMap f def sig = (fromMaybe def) <$> filter isJust (Just def) (f <$> sig)
 
 instance functorSignal :: Functor Signal where
   map = mapSig

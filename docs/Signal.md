@@ -100,6 +100,15 @@ unwrap :: forall a e. Signal (Eff e a) -> Eff e (Signal a)
 filter :: forall a. (a -> Boolean) -> a -> Signal a -> Signal a
 ```
 
+#### `filterMap`
+
+``` purescript
+filterMap :: forall a b. (a -> Maybe b) -> b -> Signal a -> Signal b
+```
+
+Map a signal over a function which returns a `Maybe`, yielding only the
+values inside `Just`s, dropping the `Nothing`s.
+
 #### `(<~)`
 
 ``` purescript
