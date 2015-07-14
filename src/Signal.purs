@@ -24,6 +24,7 @@ import Data.Maybe (Maybe(..), fromMaybe, isJust)
 
 foreign import data Signal :: * -> *
 
+-- |Creates a signal with a constant value.
 foreign import constant :: forall a. a -> Signal a
 
 foreign import mapSigP :: forall a b c. (c -> Signal c) -> (a -> b) -> (Signal a) -> (Signal b)
@@ -55,11 +56,16 @@ mergeMany sigs = foldl mergeMaybe Nothing (Just <$> sigs)
 
 foreign import foldpP :: forall a b c. (c -> Signal c) -> (a -> b -> b) -> b -> (Signal a) -> (Signal b)
 
+-- |Creates a past dependent signal. The function argument takes the value of
+-- |the input signal, and the previous value of the output signal, to produce
+-- |the new value of the output signal.
 foldp :: forall a b. (a -> b -> b) -> b -> Signal a -> Signal b
 foldp = foldpP constant
 
 foreign import sampleOnP :: forall a b c. (c -> Signal c) -> (Signal a) -> (Signal b) -> (Signal b)
 
+-- |Creates a signal which yields the current value of the second signal every
+-- |time the first signal yields.
 sampleOn :: forall a b. Signal a -> Signal b -> Signal b
 sampleOn = sampleOnP constant
 
@@ -81,15 +87,22 @@ dropRepeats' = dropRepeatsRefP constant
 zip :: forall a b c. (a -> b -> c) -> Signal a -> Signal b -> Signal c
 zip = map2
 
+-- |Given a signal of effects with no return value, run each effect as it
+-- |comes in.
 foreign import runSignal :: forall e. Signal (Eff e Unit) -> Eff e Unit
 
-foreign import unwrapP :: forall e a c. (c -> Signal c) -> (Signal (Eff e a)) -> (Eff e (Signal a))
+foreign import unwrapP :: forall e a c. (c -> Signal c) -> Signal (Eff e a) -> Eff e (Signal a)
 
+-- |Takes a signal of effects of `a`, and produces an effect which returns a
+-- |signal which will take each effect produced by the input signal, run it,
+-- |and yield its returned value.
 unwrap :: forall a e. Signal (Eff e a) -> Eff e (Signal a)
 unwrap = unwrapP constant
 
 foreign import filterP :: forall a c. (c -> Signal c) -> (a -> Boolean) -> a -> (Signal a) -> (Signal a)
 
+-- |Takes a signal and filters out yielded values for which the provided
+-- |predicate function returns `false`.
 filter :: forall a. (a -> Boolean) -> a -> Signal a -> Signal a
 filter = filterP constant
 

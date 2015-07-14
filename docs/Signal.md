@@ -20,17 +20,7 @@ instance semigroupSignal :: Semigroup (Signal a)
 constant :: forall a. a -> Signal a
 ```
 
-#### `mapSig`
-
-``` purescript
-mapSig :: forall a b. (a -> b) -> Signal a -> Signal b
-```
-
-#### `applySig`
-
-``` purescript
-applySig :: forall a b. Signal (a -> b) -> Signal a -> Signal b
-```
+Creates a signal with a constant value.
 
 #### `merge`
 
@@ -58,11 +48,18 @@ was empty.
 foldp :: forall a b. (a -> b -> b) -> b -> Signal a -> Signal b
 ```
 
+Creates a past dependent signal. The function argument takes the value of
+the input signal, and the previous value of the output signal, to produce
+the new value of the output signal.
+
 #### `sampleOn`
 
 ``` purescript
 sampleOn :: forall a b. Signal a -> Signal b -> Signal b
 ```
+
+Creates a signal which yields the current value of the second signal every
+time the first signal yields.
 
 #### `dropRepeats`
 
@@ -95,17 +92,27 @@ zip :: forall a b c. (a -> b -> c) -> Signal a -> Signal b -> Signal c
 runSignal :: forall e. Signal (Eff e Unit) -> Eff e Unit
 ```
 
+Given a signal of effects with no return value, run each effect as it
+comes in.
+
 #### `unwrap`
 
 ``` purescript
 unwrap :: forall a e. Signal (Eff e a) -> Eff e (Signal a)
 ```
 
+Takes a signal of effects of `a`, and produces an effect which returns a
+signal which will take each effect produced by the input signal, run it,
+and yield its returned value.
+
 #### `filter`
 
 ``` purescript
 filter :: forall a. (a -> Boolean) -> a -> Signal a -> Signal a
 ```
+
+Takes a signal and filters out yielded values for which the provided
+predicate function returns `false`.
 
 #### `filterMap`
 

@@ -20,11 +20,15 @@ type CoordinatePair = { x :: Int, y :: Int }
 
 foreign import keyPressedP :: forall e c. (c -> Signal c) -> Int -> Eff (dom :: DOM | e) (Signal Boolean)
 
+-- |Creates a signal which will be `true` when the key matching the given key
+-- |code is pressed, and `false` when it's released.
 keyPressed :: forall e. Int -> Eff (dom :: DOM | e) (Signal Boolean)
 keyPressed = keyPressedP constant
 
 foreign import mouseButtonP :: forall e c. (c -> Signal c) -> Int -> Eff (dom :: DOM | e) (Signal Boolean)
 
+-- |Creates a signal which will be `true` when the given mouse button is
+-- |pressed, and `false` when it's released.
 mouseButton :: forall e. Int -> Eff (dom :: DOM | e) (Signal Boolean)
 mouseButton = mouseButtonP constant
 
@@ -37,9 +41,13 @@ type Touch = { id :: String
 
 foreign import touchP :: forall e c. (c -> Signal c) -> Eff (dom :: DOM | e) (Signal (Array Touch))
 
+-- |A signal containing the current state of the touch device, as described by
+-- |the `Touch` record type.
 touch :: forall e. Eff (dom :: DOM | e) (Signal (Array Touch))
 touch = touchP constant
 
+-- |A signal which will be `true` when at least one finger is touching the
+-- |touch device, and `false` otherwise.
 tap :: forall e. Eff (dom :: DOM | e) (Signal Boolean)
 tap = do
   touches <- touch
@@ -49,10 +57,13 @@ tap = do
 
 foreign import mousePosP :: forall e c. (c -> Signal c) -> Eff (dom :: DOM | e) (Signal CoordinatePair)
 
+-- |A signal containing the current mouse position.
 mousePos :: forall e. Eff (dom :: DOM | e) (Signal CoordinatePair)
 mousePos = mousePosP constant
 
 foreign import animationFrameP :: forall e c. (c -> Signal c) -> Eff (timer :: Timer | e) Time -> Eff (dom :: DOM, timer :: Timer | e) (Signal Time)
 
+-- |A signal which yields the current time, as determined by `now`, on every
+-- |animation frame (see [https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame]).
 animationFrame :: forall e. Eff (dom :: DOM, timer :: Timer | e) (Signal Time)
 animationFrame = animationFrameP constant now

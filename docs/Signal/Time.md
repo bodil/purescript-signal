@@ -24,13 +24,17 @@ second :: Time
 every :: Time -> Signal Time
 ```
 
+Creates a signal which yields the current time (according to `now`) every
+given number of milliseconds.
+
 #### `now`
 
 ``` purescript
 now :: forall e. Eff (timer :: Timer | e) Time
 ```
 
-Returns the number of milliseconds since an arbitrary, but constant, time in the past.
+Returns the number of milliseconds since an arbitrary, but constant, time
+in the past.
 
 #### `delay`
 

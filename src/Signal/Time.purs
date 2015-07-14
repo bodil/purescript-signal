@@ -22,10 +22,13 @@ second = 1000.0
 
 foreign import everyP :: forall c e. (c -> Signal c) -> Time -> Signal Time
 
+-- |Creates a signal which yields the current time (according to `now`) every
+-- |given number of milliseconds.
 every :: Time -> Signal Time
 every = everyP constant
 
--- |Returns the number of milliseconds since an arbitrary, but constant, time in the past.
+-- |Returns the number of milliseconds since an arbitrary, but constant, time
+-- |in the past.
 foreign import now :: forall e. Eff (timer :: Timer | e) Time
 
 foreign import delayP :: forall c a. (c -> Signal c) -> Time -> Signal a -> Signal a
