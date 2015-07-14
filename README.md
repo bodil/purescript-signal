@@ -6,7 +6,7 @@ See also [the Elm Signal documentation](http://library.elm-lang.org/catalog/elm-
 
 ## Documentation
 
-* [Module documentation](docs/Module.md)
+* [Module documentation](docs/)
 
 ## Usage Examples
 
