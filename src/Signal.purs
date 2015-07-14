@@ -7,7 +7,6 @@ module Signal
   , sampleOn
   , dropRepeats
   , dropRepeats'
-  , zip
   , runSignal
   , unwrap
   , filter
@@ -83,9 +82,6 @@ foreign import dropRepeatsRefP :: forall a c. (c -> Signal c) -> (Signal a) -> (
 -- |disequality.
 dropRepeats' :: forall a. Signal a -> Signal a
 dropRepeats' = dropRepeatsRefP constant
-
-zip :: forall a b c. (a -> b -> c) -> Signal a -> Signal b -> Signal c
-zip = map2
 
 -- |Given a signal of effects with no return value, run each effect as it
 -- |comes in.

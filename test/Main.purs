@@ -32,7 +32,7 @@ main = runTest do
     expect 50 (dropRepeats $ tick 1 1 [1, 1, 2, 2, 1, 3, 3]) [1, 2, 1, 3]
 
   test "zip with Tuple yields a tuple of both signals" do
-    expect 50 (zip Tuple (tick 2 4 [1, 2, 3]) (tick 4 4 [1, 2, 3]))
+    expect 50 (Tuple <~ (tick 2 4 [1, 2, 3]) ~ (tick 4 4 [1, 2, 3]))
       [Tuple 1 1, Tuple 2 1, Tuple 2 2, Tuple 3 2, Tuple 3 3]
 
   test "sum up values with foldp" do

@@ -80,12 +80,6 @@ Create a signal which only yields values which aren't equal to the previous
 value of the input signal, using JavaScript's `!==` operator to determine
 disequality.
 
-#### `zip`
-
-``` purescript
-zip :: forall a b c. (a -> b -> c) -> Signal a -> Signal b -> Signal c
-```
-
 #### `runSignal`
 
 ``` purescript
