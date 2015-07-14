@@ -48,8 +48,8 @@ exports.mergeP =
     return function(sig1) {
       return function(sig2) {
         var out = constant(sig1.get());
-        sig1.subscribe(out.set);
         sig2.subscribe(out.set);
+        sig1.subscribe(out.set);
         return out;
       };
     };
