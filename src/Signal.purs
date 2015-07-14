@@ -7,8 +7,8 @@ module Signal
   , mergeMany
   , foldp
   , sampleOn
-  , distinct
-  , distinct'
+  , dropRepeats
+  , dropRepeats'
   , zip
   , runSignal
   , unwrap
@@ -65,15 +65,20 @@ foreign import sampleOnP :: forall a b c. (c -> Signal c) -> (Signal a) -> (Sign
 sampleOn :: forall a b. Signal a -> Signal b -> Signal b
 sampleOn = sampleOnP constant
 
-foreign import distinctP :: forall a c. (Eq a) => (c -> Signal c) -> Signal a -> Signal a
+foreign import dropRepeatsP :: forall a c. (Eq a) => (c -> Signal c) -> Signal a -> Signal a
 
-distinct :: forall a. (Eq a) => Signal a -> Signal a
-distinct = distinctP constant
+-- |Create a signal which only yields values which aren't equal to the previous
+-- |value of the input signal.
+dropRepeats :: forall a. (Eq a) => Signal a -> Signal a
+dropRepeats = dropRepeatsP constant
 
-foreign import distinctRefP :: forall a c. (c -> Signal c) -> (Signal a) -> (Signal a)
+foreign import dropRepeatsRefP :: forall a c. (c -> Signal c) -> (Signal a) -> (Signal a)
 
-distinct' :: forall a. Signal a -> Signal a
-distinct' = distinctRefP constant
+-- |Create a signal which only yields values which aren't equal to the previous
+-- |value of the input signal, using JavaScript's `!==` operator to determine
+-- |disequality.
+dropRepeats' :: forall a. Signal a -> Signal a
+dropRepeats' = dropRepeatsRefP constant
 
 zip :: forall a b c. (a -> b -> c) -> Signal a -> Signal b -> Signal c
 zip = map2

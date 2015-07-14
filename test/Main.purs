@@ -28,8 +28,8 @@ main = runTest do
   test "sampleOn samples values from sig2 when sig1 changes" do
     expect 150 (sampleOn (every 40.0) $ tick 10 20 [1, 2, 3, 4, 5, 6]) [1, 3, 5, 6]
 
-  test "distinct only yields when value is /= previous" do
-    expect 50 (distinct $ tick 1 1 [1, 1, 2, 2, 1, 3, 3]) [1, 2, 1, 3]
+  test "dropRepeats only yields when value is /= previous" do
+    expect 50 (dropRepeats $ tick 1 1 [1, 1, 2, 2, 1, 3, 3]) [1, 2, 1, 3]
 
   test "zip with Tuple yields a tuple of both signals" do
     expect 50 (zip Tuple (tick 2 4 [1, 2, 3]) (tick 4 4 [1, 2, 3]))

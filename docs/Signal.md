@@ -64,17 +64,24 @@ foldp :: forall a b. (a -> b -> b) -> b -> Signal a -> Signal b
 sampleOn :: forall a b. Signal a -> Signal b -> Signal b
 ```
 
-#### `distinct`
+#### `dropRepeats`
 
 ``` purescript
-distinct :: forall a. (Eq a) => Signal a -> Signal a
+dropRepeats :: forall a. (Eq a) => Signal a -> Signal a
 ```
 
-#### `distinct'`
+Create a signal which only yields values which aren't equal to the previous
+value of the input signal.
+
+#### `dropRepeats'`
 
 ``` purescript
-distinct' :: forall a. Signal a -> Signal a
+dropRepeats' :: forall a. Signal a -> Signal a
 ```
+
+Create a signal which only yields values which aren't equal to the previous
+value of the input signal, using JavaScript's `!==` operator to determine
+disequality.
 
 #### `zip`
 

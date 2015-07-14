@@ -85,8 +85,8 @@ exports.sampleOnP =
     };
   };
 
-exports.distinctP =
-function distinctP(eq) {
+exports.dropRepeatsP =
+function dropRepeatsP(eq) {
   return function(constant) {
     return function(sig) {
       var val = sig.get();
@@ -102,8 +102,8 @@ function distinctP(eq) {
   };
 };
 
-exports.distinctRefP =
-  function distinctRefP(constant) {
+exports.dropRepeatsRefP =
+  function dropRepeatsRefP(constant) {
     return function(sig) {
       var val = sig.get();
       var out = constant(val);
