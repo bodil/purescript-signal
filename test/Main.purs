@@ -1,5 +1,6 @@
 module Test.Main where
 
+import Data.Maybe
 import Data.Tuple(Tuple(..))
 import Prelude
 import Signal
@@ -13,8 +14,13 @@ main = runTest do
   test "subscribe to constant must yield once" do
     expect 1 (constant "lol") ["lol"]
 
-  test "merge two constants yields second constant" do
-    expect 1 (constant "foo" <> constant "bar") ["bar"]
+  test "merge two constants yields first constant" do
+    expect 1 (constant "foo" <> constant "bar") ["foo"]
+
+  test "mergeMany a list of constants yields first constant" do
+    let sig = fromMaybe (constant "nope")
+              (mergeMany [constant "foo", constant "bar", constant "gazonk"])
+    expect 1 sig ["foo"]
 
   test "map function over signal" do
     expect 50 (tick 1 1 [1, 2, 3] ~> \x -> x * 2) [2, 4, 6]

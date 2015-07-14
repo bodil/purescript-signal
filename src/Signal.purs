@@ -4,6 +4,7 @@ module Signal
   , mapSig
   , applySig
   , merge
+  , mergeMany
   , foldp
   , sampleOn
   , distinct
@@ -19,6 +20,8 @@ module Signal
 
 import Control.Monad.Eff (Eff())
 import Prelude ((<$>), (<*>), flip, Unit(), Eq, Semigroup, Functor, Applicative, Apply)
+import Data.Foldable (foldl, Foldable)
+import Data.Maybe (Maybe(..))
 
 foreign import data Signal :: * -> *
 
@@ -36,8 +39,20 @@ applySig = applySigP constant
 
 foreign import mergeP :: forall a c. (c -> Signal c) -> (Signal a) -> (Signal a) -> (Signal a)
 
+-- |Merge two signals, returning a new signal which will yield a value
+-- |whenever either of the input signals yield. Its initial value will be
+-- |that of the first signal.
 merge :: forall a. Signal a -> Signal a -> Signal a
 merge = mergeP constant
+
+-- |Merge all signals inside a `Foldable`, returning a `Maybe` which will
+-- |either contain the resulting signal, or `Nothing` if the `Foldable`
+-- |was empty.
+mergeMany :: forall f a. (Functor f, Foldable f) => f (Signal a) -> Maybe (Signal a)
+mergeMany sigs = foldl mergeMaybe Nothing (Just <$> sigs)
+  where mergeMaybe a Nothing = a
+        mergeMaybe Nothing a = a
+        mergeMaybe (Just a) (Just b) = Just (merge a b)
 
 foreign import foldpP :: forall a b c. (c -> Signal c) -> (a -> b -> b) -> b -> (Signal a) -> (Signal b)
 
