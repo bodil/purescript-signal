@@ -138,7 +138,7 @@ exports.unwrapP =
     };
   };
 
-exports.keepIfP =
+exports.filterP =
   function keepIfP(constant) {
     return function(fn) {
       return function(seed) {

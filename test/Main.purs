@@ -38,8 +38,8 @@ main = runTest do
   test "sum up values with foldp" do
     expect 50 (foldp (+) 0 $ tick 1 1 [1, 2, 3, 4, 5]) [1, 3, 6, 10, 15]
 
-  test "filter values with keepIf" do
-    expect 50 (keepIf (\n -> n < 5) 0 $ tick 1 1 [5, 3, 8, 4]) [0, 3, 4]
+  test "filter values with filter" do
+    expect 50 (filter (\n -> n < 5) 0 $ tick 1 1 [5, 3, 8, 4]) [0, 3, 4]
 
   test "channel subscriptions yield when we send to the channel" do
     timeout 50 $ testFn \done -> do

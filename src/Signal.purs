@@ -12,7 +12,7 @@ module Signal
   , zip
   , runSignal
   , unwrap
-  , keepIf
+  , filter
   , (<~)
   , (~>)
   , (~)
@@ -84,10 +84,10 @@ foreign import unwrapP :: forall e a c. (c -> Signal c) -> (Signal (Eff e a)) ->
 unwrap :: forall a e. Signal (Eff e a) -> Eff e (Signal a)
 unwrap = unwrapP constant
 
-foreign import keepIfP :: forall a c. (c -> Signal c) -> (a -> Boolean) -> a -> (Signal a) -> (Signal a)
+foreign import filterP :: forall a c. (c -> Signal c) -> (a -> Boolean) -> a -> (Signal a) -> (Signal a)
 
-keepIf :: forall a. (a -> Boolean) -> a -> Signal a -> Signal a
-keepIf = keepIfP constant
+filter :: forall a. (a -> Boolean) -> a -> Signal a -> Signal a
+filter = filterP constant
 
 instance functorSignal :: Functor Signal where
   map = mapSig

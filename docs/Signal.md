@@ -94,10 +94,10 @@ runSignal :: forall e. Signal (Eff e Unit) -> Eff e Unit
 unwrap :: forall a e. Signal (Eff e a) -> Eff e (Signal a)
 ```
 
-#### `keepIf`
+#### `filter`
 
 ``` purescript
-keepIf :: forall a. (a -> Boolean) -> a -> Signal a -> Signal a
+filter :: forall a. (a -> Boolean) -> a -> Signal a -> Signal a
 ```
 
 #### `(<~)`
