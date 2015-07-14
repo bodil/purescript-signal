@@ -24,3 +24,22 @@ exports.everyP = function everyP(constant) {
     return out;
   };
 };
+
+exports.delayP = function delayP(constant) {
+  return function(t) {
+    return function(sig) {
+      var out = constant(sig.get());
+      var first = true;
+      sig.subscribe(function(val) {
+        if (first) {
+          first = false;
+        } else {
+          setTimeout(function() {
+            out.set(val);
+          }, t);
+        }
+      });
+      return out;
+    }
+  };
+};

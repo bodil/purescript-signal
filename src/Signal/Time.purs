@@ -1,6 +1,7 @@
 module Signal.Time
   ( Time()
   , every
+  , delay
   , millisecond
   , now
   , second
@@ -25,3 +26,10 @@ every = everyP constant
 
 -- |Returns the number of milliseconds since an arbitrary, but constant, time in the past.
 foreign import now :: forall e. Eff (timer :: Timer | e) Time
+
+foreign import delayP :: forall c a. (c -> Signal c) -> Time -> Signal a -> Signal a
+
+-- |Takes a signal and delays its yielded values by a given number of
+-- |milliseconds.
+delay :: forall a. Time -> Signal a -> Signal a
+delay = delayP constant

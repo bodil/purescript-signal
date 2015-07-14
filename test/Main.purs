@@ -50,3 +50,7 @@ main = runTest do
       chan <- channel 1
       runSignal $ tick 1 1 [2, 3, 4] ~> send chan
       expectFn (subscribe chan) [2, 3, 4] done
+
+  test "delayed signal yields same values" do
+    expect 50 (delay 40.0 $ tick 1 1 [1, 2, 3, 4, 5]) [1, 2, 3, 4, 5]
+
