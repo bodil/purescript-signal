@@ -1,8 +1,6 @@
 module Signal
   ( Signal()
   , constant
-  , mapSig
-  , applySig
   , merge
   , mergeMany
   , foldp
