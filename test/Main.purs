@@ -54,3 +54,5 @@ main = runTest do
   test "delayed signal yields same values" do
     expect 50 (delay 40.0 $ tick 1 1 [1, 2, 3, 4, 5]) [1, 2, 3, 4, 5]
 
+  test "since yields true only once for multiple yields, then false" do
+    expect 25 (since 10.0 $ tick 1 1 [1, 2, 3]) [false, true, false]

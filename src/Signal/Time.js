@@ -43,3 +43,31 @@ exports.delayP = function delayP(constant) {
     }
   };
 };
+
+exports.sinceP = function sinceP(constant) {
+  return function(t) {
+    return function(sig) {
+      var out = constant(false);
+      var first = true;
+      var timer = undefined;
+      var tick = function() {
+        out.set(false);
+        timer = undefined;
+      };
+      sig.subscribe(function() {
+        if (first) {
+          first = false;
+          return;
+        }
+        if (timer === undefined) {
+          out.set(true);
+          timer = setTimeout(tick, t);
+        } else {
+          clearTimeout(timer);
+          timer = setTimeout(tick, t);
+        }
+      });
+      return out;
+    }
+  };
+};
