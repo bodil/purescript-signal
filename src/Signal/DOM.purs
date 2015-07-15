@@ -5,8 +5,10 @@ module Signal.DOM
   , touch
   , tap
   , mousePos
-  , CoordinatePair()
-  , Touch()
+  , windowDimensions
+  , CoordinatePair(..)
+  , DimensionPair(..)
+  , Touch(..)
   ) where
 
 import Control.Monad.Eff (Eff(..))
@@ -17,6 +19,7 @@ import Signal (constant, Signal(..), (~>), unwrap)
 import Signal.Time (now, Time(..))
 
 type CoordinatePair = { x :: Int, y :: Int }
+type DimensionPair  = { w :: Int, h :: Int }
 
 foreign import keyPressedP :: forall e c. (c -> Signal c) -> Int -> Eff (dom :: DOM | e) (Signal Boolean)
 
@@ -67,3 +70,9 @@ foreign import animationFrameP :: forall e c. (c -> Signal c) -> Eff (timer :: T
 -- |animation frame (see [https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame]).
 animationFrame :: forall e. Eff (dom :: DOM, timer :: Timer | e) (Signal Time)
 animationFrame = animationFrameP constant now
+
+foreign import windowDimensionsP :: forall e c. (c -> Signal c) -> Eff (dom :: DOM | e) (Signal DimensionPair)
+
+-- |A signal which contains the document window's current width and height.
+windowDimensions :: forall e. Eff (dom :: DOM | e) (Signal DimensionPair)
+windowDimensions = windowDimensionsP constant
