@@ -6,6 +6,12 @@
 type CoordinatePair = { x :: Int, y :: Int }
 ```
 
+#### `DimensionPair`
+
+``` purescript
+type DimensionPair = { w :: Int, h :: Int }
+```
+
 #### `keyPressed`
 
 ``` purescript
@@ -64,5 +70,13 @@ animationFrame :: forall e. Eff (dom :: DOM, timer :: Timer | e) (Signal Time)
 
 A signal which yields the current time, as determined by `now`, on every
 animation frame (see [https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame]).
+
+#### `windowDimensions`
+
+``` purescript
+windowDimensions :: forall e. Eff (dom :: DOM | e) (Signal DimensionPair)
+```
+
+A signal which contains the document window's current width and height.
 
 
