@@ -12,13 +12,14 @@ PureScript depends on effects (specifically, the `Eff` monad) to manage side eff
 module Main where
 
 import Control.Monad.Eff.Console
+import Control.Monad.Eff
 import Prelude
 import Signal
 
 hello :: Signal String
 hello = constant "Hello Joe!"
 
-helloEffect :: Signal (Eff (console :: CONSOLE | eff) Unit)
+helloEffect :: forall eff. Signal (Eff (console :: CONSOLE | eff) Unit)
 helloEffect = hello ~> log
 
 main = runSignal helloEffect
