@@ -11,12 +11,12 @@ module Signal.DOM
   , Touch(..)
   ) where
 
-import Control.Monad.Eff (Eff(..))
+import Control.Monad.Eff (Eff())
 import Control.Timer (Timer())
-import DOM (DOM(..))
+import DOM (DOM())
 import Prelude (($), bind, return)
-import Signal (constant, Signal(..), (~>), unwrap)
-import Signal.Time (now, Time(..))
+import Signal (constant, Signal(), (~>), unwrap)
+import Signal.Time (now, Time())
 
 type CoordinatePair = { x :: Int, y :: Int }
 type DimensionPair  = { w :: Int, h :: Int }
