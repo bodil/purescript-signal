@@ -20,7 +20,7 @@ millisecond = 1.0
 second :: Time
 second = 1000.0
 
-foreign import everyP :: forall c e. (c -> Signal c) -> Time -> Signal Time
+foreign import everyP :: forall c. (c -> Signal c) -> Time -> Signal Time
 
 -- |Creates a signal which yields the current time (according to `now`) every
 -- |given number of milliseconds.
