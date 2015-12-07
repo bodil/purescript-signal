@@ -15,7 +15,7 @@ import Control.Monad.Eff (Eff())
 import Control.Timer (Timer())
 import DOM (DOM())
 import Prelude (($), bind, return)
-import Signal (constant, Signal(), (~>), unwrap)
+import Signal (constant, Signal(), (~>))
 import Signal.Time (now, Time())
 
 type CoordinatePair = { x :: Int, y :: Int }
