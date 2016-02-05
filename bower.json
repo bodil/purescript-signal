@@ -15,7 +15,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "purescript-functions": "~0.1.0",
-    "purescript-test-unit": "~3.0.0",
+    "purescript-test-unit": "~4.1.0",
     "purescript-lists": "~0.7.7"
   }
 }

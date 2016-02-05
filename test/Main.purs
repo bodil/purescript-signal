@@ -1,6 +1,8 @@
 module Test.Main where
 
+import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Ref (REF)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Tuple (Tuple(..))
@@ -9,10 +11,10 @@ import Signal ((~>), runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats
 import Signal.Channel (subscribe, send, channel, Chan)
 import Signal.Time (since, delay, every)
 import Test.Signal (tick, expect, expectFn)
-import Test.Unit (test, testFn, timeout, runTest, Timer)
-import Test.Unit.Console (TestOutput)
+import Test.Unit (test, timeout, runTest, TIMER)
+import Test.Unit.Console (TESTOUTPUT)
 
-main :: forall e. Eff (testOutput :: TestOutput, timer :: Timer, ref :: REF, chan :: Chan | e) Unit
+main :: forall e. Eff (testOutput :: TESTOUTPUT, timer :: TIMER, ref :: REF, avar :: AVAR, chan :: Chan | e) Unit
 main = runTest do
 
   test "subscribe to constant must yield once" do
@@ -50,10 +52,10 @@ main = runTest do
                  0 $ tick 1 1 [5, 3, 8, 4]) [0, 3, 4]
 
   test "channel subscriptions yield when we send to the channel" do
-    timeout 50 $ testFn \done -> do
-      chan <- channel 1
-      runSignal $ tick 1 1 [2, 3, 4] ~> send chan
-      expectFn (subscribe chan) [2, 3, 4] done
+    timeout 50 $ do
+      chan <- liftEff $ channel 1
+      liftEff $ runSignal $ tick 1 1 [2, 3, 4] ~> send chan
+      expectFn (subscribe chan) [2, 3, 4]
 
   test "delayed signal yields same values" do
     expect 50 (delay 40.0 $ tick 1 1 [1, 2, 3, 4, 5]) [1, 2, 3, 4, 5]
