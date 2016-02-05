@@ -31,7 +31,7 @@ This gives us a `Signal (Eff (console :: CONSOLE | eff) Unit)`. We use `runSigna
 
 ## API Documentation
 
-* [Module documentation](docs/)
+* [Module documentation on Pursuit](https://pursuit.purescript.org/packages/purescript-signal/)
 
 ## Usage Examples
 
