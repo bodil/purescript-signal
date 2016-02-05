@@ -9,7 +9,7 @@ module Signal.Time
   ) where
 
 import Control.Monad.Eff (Eff)
-import Control.Timer (Timer)
+import Control.Timer (TIMER)
 import Prelude (bind)
 import Signal (constant, Signal)
 
@@ -30,7 +30,7 @@ every = everyP constant
 
 -- |Returns the number of milliseconds since an arbitrary, but constant, time
 -- |in the past.
-foreign import now :: forall e. Eff (timer :: Timer | e) Time
+foreign import now :: forall e. Eff (timer :: TIMER | e) Time
 
 foreign import delayP :: forall c a. (c -> Signal c) -> Time -> Signal a -> Signal a
 

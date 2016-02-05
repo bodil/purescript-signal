@@ -12,7 +12,7 @@ module Signal.DOM
   ) where
 
 import Control.Monad.Eff (Eff)
-import Control.Timer (Timer)
+import Control.Timer (TIMER)
 import DOM (DOM)
 import Prelude (($), bind, return)
 import Signal (constant, Signal, (~>))
@@ -64,11 +64,11 @@ foreign import mousePosP :: forall e c. (c -> Signal c) -> Eff (dom :: DOM | e) 
 mousePos :: forall e. Eff (dom :: DOM | e) (Signal CoordinatePair)
 mousePos = mousePosP constant
 
-foreign import animationFrameP :: forall e c. (c -> Signal c) -> Eff (timer :: Timer | e) Time -> Eff (dom :: DOM, timer :: Timer | e) (Signal Time)
+foreign import animationFrameP :: forall e c. (c -> Signal c) -> Eff (timer :: TIMER | e) Time -> Eff (dom :: DOM, timer :: TIMER | e) (Signal Time)
 
 -- |A signal which yields the current time, as determined by `now`, on every
 -- |animation frame (see [https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame]).
-animationFrame :: forall e. Eff (dom :: DOM, timer :: Timer | e) (Signal Time)
+animationFrame :: forall e. Eff (dom :: DOM, timer :: TIMER | e) (Signal Time)
 animationFrame = animationFrameP constant now
 
 foreign import windowDimensionsP :: forall e c. (c -> Signal c) -> Eff (dom :: DOM | e) (Signal DimensionPair)

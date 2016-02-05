@@ -8,13 +8,13 @@ import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Tuple (Tuple(..))
 import Prelude (bind, ($), (<), (+), (*), (<>), Unit)
 import Signal ((~>), runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany)
-import Signal.Channel (subscribe, send, channel, Chan)
+import Signal.Channel (subscribe, send, channel, CHANNEL)
 import Signal.Time (since, delay, every)
 import Test.Signal (tick, expect, expectFn)
 import Test.Unit (test, timeout, runTest, TIMER)
 import Test.Unit.Console (TESTOUTPUT)
 
-main :: forall e. Eff (testOutput :: TESTOUTPUT, timer :: TIMER, ref :: REF, avar :: AVAR, chan :: Chan | e) Unit
+main :: forall e. Eff (testOutput :: TESTOUTPUT, timer :: TIMER, ref :: REF, avar :: AVAR, channel :: CHANNEL | e) Unit
 main = runTest do
 
   test "subscribe to constant must yield once" do

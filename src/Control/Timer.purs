@@ -1,3 +1,3 @@
 module Control.Timer where
 
-foreign import data Timer :: !
+foreign import data TIMER :: !
