@@ -1,7 +1,5 @@
 /bower_components/
 /output/
-node_modules
-.cabal-sandbox
-cabal.sandbox.config
-.psci
-.pulp-cache
+/.psci
+/.browserify-cache.json
+/.psci_modules/

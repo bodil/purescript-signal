@@ -6,10 +6,10 @@ module Signal.Channel
   , Chan()
   ) where
 
-import Control.Monad.Eff (Eff())
-import Prelude (Unit())
+import Control.Monad.Eff (Eff)
+import Prelude (Unit)
 
-import Signal (constant, Signal())
+import Signal (constant, Signal)
 
 foreign import data Channel :: * -> *
 foreign import data Chan :: !

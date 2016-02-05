@@ -8,9 +8,10 @@ module Signal.Time
   , second
   ) where
 
-import Control.Monad.Eff (Eff())
-import Control.Timer (Timer())
-import Signal (constant, Signal())
+import Control.Monad.Eff (Eff)
+import Control.Timer (Timer)
+import Prelude (bind)
+import Signal (constant, Signal)
 
 type Time = Number
 

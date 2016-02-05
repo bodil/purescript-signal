@@ -14,11 +14,18 @@ module Signal
   , (<~)
   , (~>)
   , (~)
+  , squigglyMap
+  , squigglyApply
+  , flippedMap
+  , map2
+  , map3
+  , map4
+  , map5
   ) where
 
 import Control.Monad.Eff (Eff())
-import Prelude ((<$>), (<*>), flip, Unit(), Eq, Semigroup, Functor, Applicative, Apply)
-import Data.Foldable (foldl, Foldable)
+import Prelude ((<$>), flip, Unit(), class Eq, class Semigroup, class Functor, class Applicative, class Apply, map, apply)
+import Data.Foldable (foldl, class Foldable)
 import Data.Maybe (Maybe(..), fromMaybe, isJust)
 
 foreign import data Signal :: * -> *
@@ -119,17 +126,18 @@ instance applicativeSignal :: Applicative Signal where
 instance semigroupSignal :: Semigroup (Signal a) where
   append = merge
 
-infixl 4 <~
-(<~) :: forall f a b. (Functor f) => (a -> b) -> f a -> f b
-(<~) = (<$>)
+infixl 4 squigglyMap as <~
+infixl 4 squigglyApply as ~
+infixl 4 flippedMap as ~>
 
-infixl 4 ~>
-(~>) :: forall f a b. (Functor f) => f a -> (a -> b) -> f b
-(~>) = flip (<$>)
+squigglyMap :: forall f a b. Functor f => (a -> b) -> f a -> f b
+squigglyMap = map
 
-infixl 4 ~
-(~) :: forall f a b. (Apply f) => f (a -> b) -> f a -> f b
-(~) = (<*>)
+squigglyApply :: forall f a b. Apply f => f (a -> b) -> f a -> f b
+squigglyApply = apply
+
+flippedMap :: forall f a b. Functor f => f a -> (a -> b) -> f b
+flippedMap = flip map
 
 map2 :: forall a b c. (a -> b -> c) -> Signal a -> Signal b -> Signal c
 map2 f a b = f <~ a ~ b

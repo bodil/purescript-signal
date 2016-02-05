@@ -1,14 +1,18 @@
 module Test.Main where
 
-import Data.Maybe
-import Data.Tuple(Tuple(..))
-import Prelude
-import Signal
-import Signal.Time
-import Signal.Channel
-import Test.Signal
-import Test.Unit
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Ref (REF)
+import Data.Maybe (Maybe(..), fromMaybe)
+import Data.Tuple (Tuple(..))
+import Prelude (bind, ($), (<), (+), (*), (<>), Unit)
+import Signal ((~>), runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany)
+import Signal.Channel (subscribe, send, channel, Chan)
+import Signal.Time (since, delay, every)
+import Test.Signal (tick, expect, expectFn)
+import Test.Unit (test, testFn, timeout, runTest, Timer)
+import Test.Unit.Console (TestOutput)
 
+main :: forall e. Eff (testOutput :: TestOutput, timer :: Timer, ref :: REF, chan :: Chan | e) Unit
 main = runTest do
 
   test "subscribe to constant must yield once" do
