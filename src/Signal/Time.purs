@@ -3,6 +3,7 @@ module Signal.Time
   , every
   , delay
   , since
+  , debounce
   , millisecond
   , now
   , second
@@ -10,8 +11,8 @@ module Signal.Time
 
 import Control.Monad.Eff (Eff)
 import Control.Timer (TIMER)
-import Prelude (bind)
-import Signal (constant, Signal)
+import Prelude
+import Signal (Signal, sampleOn, dropRepeats, filter, constant)
 
 type Time = Number
 
@@ -47,3 +48,15 @@ foreign import sinceP :: forall c a. (c -> Signal c) -> Time -> Signal a -> Sign
 -- |in the interim.
 since :: forall a. Time -> Signal a -> Signal Boolean
 since = sinceP constant
+
+-- |Takes a signal and a time value, and creates a signal which waits to yield
+-- |the next result until the specified amount of time has elapsed. It then
+-- |yields only the newest value from that period. New events during the debounce
+-- |period reset the delay.
+debounce :: forall a. Time -> Signal a -> Signal a
+debounce t s =
+  let leading = whenChangeTo false $ since t s
+  in sampleOn leading s
+  where
+    whenEqual value input = filter ((==) value) value input
+    whenChangeTo value input = whenEqual value $ dropRepeats input
