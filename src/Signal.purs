@@ -33,23 +33,13 @@ foreign import data Signal :: * -> *
 -- |Creates a signal with a constant value.
 foreign import constant :: forall a. a -> Signal a
 
-foreign import mapSigP :: forall a b c. (c -> Signal c) -> (a -> b) -> (Signal a) -> (Signal b)
-
-mapSig :: forall a b. (a -> b) -> Signal a -> Signal b
-mapSig = mapSigP constant
-
-foreign import applySigP :: forall a b c. (c -> Signal c) -> (Signal (a -> b)) -> (Signal a) -> (Signal b)
-
-applySig :: forall a b. Signal (a -> b) -> Signal a -> Signal b
-applySig = applySigP constant
-
-foreign import mergeP :: forall a c. (c -> Signal c) -> (Signal a) -> (Signal a) -> (Signal a)
+foreign import mapSig :: forall a b. (a -> b) -> Signal a -> Signal b
+foreign import applySig :: forall a b. Signal (a -> b) -> Signal a -> Signal b
 
 -- |Merge two signals, returning a new signal which will yield a value
 -- |whenever either of the input signals yield. Its initial value will be
 -- |that of the first signal.
-merge :: forall a. Signal a -> Signal a -> Signal a
-merge = mergeP constant
+foreign import merge :: forall a. (Signal a) -> (Signal a) -> (Signal a)
 
 -- |Merge all signals inside a `Foldable`, returning a `Maybe` which will
 -- |either contain the resulting signal, or `Nothing` if the `Foldable`
@@ -65,49 +55,33 @@ foreign import foldpP :: forall a b c. (c -> Signal c) -> (a -> b -> b) -> b -> 
 -- |Creates a past dependent signal. The function argument takes the value of
 -- |the input signal, and the previous value of the output signal, to produce
 -- |the new value of the output signal.
-foldp :: forall a b. (a -> b -> b) -> b -> Signal a -> Signal b
-foldp = foldpP constant
-
-foreign import sampleOnP :: forall a b c. (c -> Signal c) -> (Signal a) -> (Signal b) -> (Signal b)
+foreign import foldp :: forall a b. (a -> b -> b) -> b -> (Signal a) -> (Signal b)
 
 -- |Creates a signal which yields the current value of the second signal every
 -- |time the first signal yields.
-sampleOn :: forall a b. Signal a -> Signal b -> Signal b
-sampleOn = sampleOnP constant
-
-foreign import dropRepeatsP :: forall a c. (Eq a) => (c -> Signal c) -> Signal a -> Signal a
+foreign import sampleOn :: forall a b. (Signal a) -> (Signal b) -> (Signal b)
 
 -- |Create a signal which only yields values which aren't equal to the previous
 -- |value of the input signal.
-dropRepeats :: forall a. (Eq a) => Signal a -> Signal a
-dropRepeats = dropRepeatsP constant
-
-foreign import dropRepeatsRefP :: forall a c. (c -> Signal c) -> (Signal a) -> (Signal a)
+foreign import dropRepeats :: forall a. (Eq a) => Signal a -> Signal a
 
 -- |Create a signal which only yields values which aren't equal to the previous
 -- |value of the input signal, using JavaScript's `!==` operator to determine
 -- |disequality.
-dropRepeats' :: forall a. Signal a -> Signal a
-dropRepeats' = dropRepeatsRefP constant
+foreign import dropRepeats' :: forall a. (Signal a) -> (Signal a)
 
 -- |Given a signal of effects with no return value, run each effect as it
 -- |comes in.
 foreign import runSignal :: forall e. Signal (Eff e Unit) -> Eff e Unit
 
-foreign import unwrapP :: forall e a c. (c -> Signal c) -> Signal (Eff e a) -> Eff e (Signal a)
-
 -- |Takes a signal of effects of `a`, and produces an effect which returns a
 -- |signal which will take each effect produced by the input signal, run it,
 -- |and yield its returned value.
-unwrap :: forall a e. Signal (Eff e a) -> Eff e (Signal a)
-unwrap = unwrapP constant
-
-foreign import filterP :: forall a c. (c -> Signal c) -> (a -> Boolean) -> a -> (Signal a) -> (Signal a)
+foreign import unwrap :: forall e a. Signal (Eff e a) -> Eff e (Signal a)
 
 -- |Takes a signal and filters out yielded values for which the provided
 -- |predicate function returns `false`.
-filter :: forall a. (a -> Boolean) -> a -> Signal a -> Signal a
-filter = filterP constant
+foreign import filter :: forall a. (a -> Boolean) -> a -> (Signal a) -> (Signal a)
 
 -- |Map a signal over a function which returns a `Maybe`, yielding only the
 -- |values inside `Just`s, dropping the `Nothing`s.
