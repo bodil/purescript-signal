@@ -11,7 +11,7 @@ import Data.Function (Fn4, runFn4)
 import Data.List (List(..), toList, fromList)
 import Prelude (class Show, class Eq, bind, ($), show, (++), (/=), unit)
 import Signal (Signal, constant, (~>), runSignal)
-import Test.Unit (TIMER, Assertion, timeout, success, failure)
+import Test.Unit (Assertion, timeout)
 
 expectFn :: forall e a. (Eq a, Show a) => Signal a -> Array a -> Assertion (ref :: REF | e)
 expectFn sig vals = makeAff \fail win -> do
