@@ -24,7 +24,7 @@ module Signal
   ) where
 
 import Control.Monad.Eff (Eff())
-import Prelude ((<$>), flip, Unit(), class Eq, class Semigroup, class Functor, class Applicative, class Apply, map, apply)
+import Prelude
 import Data.Foldable (foldl, class Foldable)
 import Data.Maybe (Maybe(..), fromMaybe, isJust)
 

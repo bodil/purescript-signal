@@ -1,15 +1,16 @@
 module Test.Main where
 
+import Control.Monad.Aff (Aff, later', forkAff)
 import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Ref (REF)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Tuple (Tuple(..))
-import Prelude (bind, ($), (<), (+), (*), (<>), Unit)
+import Prelude
 import Signal ((~>), runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany)
 import Signal.Channel (subscribe, send, channel, CHANNEL)
-import Signal.Time (since, delay, every)
+import Signal.Time (since, delay, every, debounce)
 import Test.Signal (tick, expect, expectFn)
 import Test.Unit (test, timeout, runTest, TIMER)
 import Test.Unit.Console (TESTOUTPUT)
@@ -62,3 +63,22 @@ main = runTest do
 
   test "since yields true only once for multiple yields, then false" do
     expect 25 (since 10.0 $ tick 1 1 [1, 2, 3]) [false, true, false]
+
+  test "debounce yields only the most recent value in a series shorter than the interval" do
+    chan <- liftEff $ channel 0
+    let sig = debounce 10.0 $ subscribe chan
+        send' = liftEff <<< send chan
+
+    forkAff $ expect 50 sig [0,2,4]
+    wait 20
+    send' 1
+    wait 5
+    send' 2
+    wait 20
+    send' 3
+    wait 5
+    send' 4
+    wait 20
+
+wait :: forall e. Int -> Aff e Unit
+wait t = later' t $ pure unit
