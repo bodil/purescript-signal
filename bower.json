@@ -6,17 +6,17 @@
     "url": "git://github.com/bodil/purescript-signal.git"
   },
   "dependencies": {
-    "purescript-dom": "~0.2.9",
+    "purescript-dom": "~0.2.20",
     "purescript-refs": "~0.2.0",
-    "purescript-prelude": "~0.1.3",
-    "purescript-foldable-traversable": "~0.4.1",
+    "purescript-prelude": "~0.1.5",
+    "purescript-foldable-traversable": "~0.4.2",
     "purescript-maybe": "~0.3.5"
   },
   "license": "Apache-2.0",
   "devDependencies": {
     "purescript-functions": "~0.1.0",
     "purescript-test-unit": "~4.1.0",
-    "purescript-lists": "~0.7.7",
+    "purescript-lists": "~0.7.10",
     "purescript-console": "^0.1.1"
   }
 }
