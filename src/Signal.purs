@@ -50,8 +50,6 @@ mergeMany sigs = foldl mergeMaybe Nothing (Just <$> sigs)
         mergeMaybe Nothing a = a
         mergeMaybe (Just a) (Just b) = Just (merge a b)
 
-foreign import foldpP :: forall a b c. (c -> Signal c) -> (a -> b -> b) -> b -> (Signal a) -> (Signal b)
-
 -- |Creates a past dependent signal. The function argument takes the value of
 -- |the input signal, and the previous value of the output signal, to produce
 -- |the new value of the output signal.
