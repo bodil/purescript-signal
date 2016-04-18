@@ -8,7 +8,7 @@ import Control.Monad.Eff.Ref (REF)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Tuple (Tuple(..))
 import Prelude
-import Signal ((~>), runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany)
+import Signal ((~>), runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany, flatten)
 import Signal.Channel (subscribe, send, channel, CHANNEL)
 import Signal.Time (since, delay, every, debounce)
 import Test.Signal (tick, expect, expectFn)
@@ -51,6 +51,12 @@ main = runTest do
   test "filter Maybe values with filterMap" do
     expect 50 (filterMap (\n -> if n < 5 then Just n else Nothing)
                  0 $ tick 1 1 [5, 3, 8, 4]) [0, 3, 4]
+
+  test "flatten flattens values" do
+    expect 50 (flatten (tick 10 1 [[1, 2], [3, 4], [], [5, 6, 7]]) 0)
+      [1, 2, 3, 4, 5, 6, 7]
+    expect 50 (flatten (tick 10 1 [[], [1, 2], [3, 4], [], [5, 6, 7]]) 0)
+      [0, 1, 2, 3, 4, 5, 6, 7]
 
   test "channel subscriptions yield when we send to the channel" do
     timeout 50 $ do

@@ -124,3 +124,25 @@ exports.filter = function(fn) {
     };
   };
 };
+
+exports.flattenArray = function(sig) {
+  return function(seed) {
+    var first = sig.get().slice();
+    if (first.length > 0) {
+      seed = first[0];
+    } else {
+      first = null;
+    }
+    var out = make(seed);
+    var feed = function(items) { items.forEach(out.set); };
+    setTimeout(function() { sig.subscribe(function(val) {
+      if (first === null) {
+        feed(val);
+      } else {
+        feed(first.slice(1));
+        first = null;
+      }
+    }); }, 0);
+    return out;
+  };
+};

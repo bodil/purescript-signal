@@ -11,6 +11,8 @@ module Signal
   , unwrap
   , filter
   , filterMap
+  , flatten
+  , flattenArray
   , (<~)
   , (~>)
   , (~)
@@ -23,9 +25,10 @@ module Signal
   , map5
   ) where
 
-import Control.Monad.Eff (Eff())
 import Prelude
-import Data.Foldable (foldl, class Foldable)
+
+import Control.Monad.Eff (Eff())
+import Data.Foldable (fold, foldl, class Foldable)
 import Data.Maybe (Maybe(..), fromMaybe, isJust)
 
 foreign import data Signal :: * -> *
@@ -85,6 +88,17 @@ foreign import filter :: forall a. (a -> Boolean) -> a -> (Signal a) -> (Signal 
 -- |values inside `Just`s, dropping the `Nothing`s.
 filterMap :: forall a b. (a -> Maybe b) -> b -> Signal a -> Signal b
 filterMap f def sig = (fromMaybe def) <$> filter isJust (Just def) (f <$> sig)
+
+-- |Turns a signal of arrays of items into a signal of each item inside
+-- |each array, in order.
+-- |
+-- |Like `flatten`, but faster.
+foreign import flattenArray :: forall a. Signal (Array a) -> a -> Signal a
+
+-- |Turns a signal of collections of items into a signal of each item inside
+-- |each collection, in order.
+flatten :: forall a f. (Functor f, Foldable f) => Signal (f a) -> a -> Signal a
+flatten sig = flattenArray (sig ~> map (\i -> [i]) >>> fold)
 
 instance functorSignal :: Functor Signal where
   map = mapSig
