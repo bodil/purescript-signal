@@ -105,7 +105,7 @@ exports.animationFrameP =
   };
 
 exports.windowDimensionsP = function windowDimensionsP(constant) {
-  var out = constant({ w: window.innerWidth, h: innerHeight });
+  var out = constant({ w: window.innerWidth, h: window.innerHeight });
   window.addEventListener("resize", function() {
     out.set({ w: window.innerWidth, h: window.innerHeight });
   });
