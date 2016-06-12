@@ -14,7 +14,7 @@ module Signal.DOM
 import Control.Monad.Eff (Eff)
 import Control.Timer (TIMER)
 import DOM (DOM)
-import Prelude (($), bind, return)
+import Prelude (($), bind, pure)
 import Signal (constant, Signal, (~>))
 import Signal.Time (now, Time)
 
@@ -54,7 +54,7 @@ touch = touchP constant
 tap :: forall e. Eff (dom :: DOM | e) (Signal Boolean)
 tap = do
   touches <- touch
-  return $ touches ~> \t -> case t of
+  pure $ touches ~> \t -> case t of
     [] -> false
     _ -> true
 
