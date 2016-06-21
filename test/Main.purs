@@ -1,21 +1,23 @@
 module Test.Main where
 
+import Prelude
 import Control.Monad.Aff (Aff, later', forkAff)
 import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
+import Control.Monad.Eff.Console (CONSOLE)
 import Control.Monad.Eff.Ref (REF)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Tuple (Tuple(..))
-import Prelude
 import Signal ((~>), runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany, flatten)
 import Signal.Channel (subscribe, send, channel, CHANNEL)
 import Signal.Time (since, delay, every, debounce)
 import Test.Signal (tick, expect, expectFn)
-import Test.Unit (test, timeout, runTest, TIMER)
+import Test.Unit (test, timeout, TIMER)
 import Test.Unit.Console (TESTOUTPUT)
+import Test.Unit.Main (runTest)
 
-main :: forall e. Eff (testOutput :: TESTOUTPUT, timer :: TIMER, ref :: REF, avar :: AVAR, channel :: CHANNEL | e) Unit
+main :: forall e. Eff (testOutput :: TESTOUTPUT, timer :: TIMER, ref :: REF, avar :: AVAR, channel :: CHANNEL, console :: CONSOLE | e) Unit
 main = runTest do
 
   test "subscribe to constant must yield once" do

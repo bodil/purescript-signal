@@ -14,9 +14,9 @@
   },
   "license": "Apache-2.0",
   "devDependencies": {
-    "purescript-functions": "~0.1.0",
-    "purescript-test-unit": "~4.1.0",
-    "purescript-lists": "~0.7.10",
-    "purescript-console": "^0.1.1"
+    "purescript-functions": "~1.0.0",
+    "purescript-test-unit": "~7.0.0",
+    "purescript-lists": "~1.0.0",
+    "purescript-console": "^1.0.0"
   }
 }
