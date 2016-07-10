@@ -6,7 +6,7 @@
     "url": "git://github.com/bodil/purescript-signal.git"
   },
   "dependencies": {
-    "purescript-dom": "~1.0.0",
+    "purescript-dom": "~1.1.0",
     "purescript-refs": "~1.0.0",
     "purescript-prelude": "~1.0.1",
     "purescript-foldable-traversable": "~1.0.0",
