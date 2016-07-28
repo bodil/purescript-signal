@@ -2,7 +2,7 @@
 
 Signal is a lightweight FRP-like library heavily inspired by the Elm Signal implementation. Where possible and sensible, it tries to maintain API equivalence with Elm.
 
-See [the Elm documentation](http://elm-lang.org/guide/reactivity#signals) for details on usage and principles.
+See [the Elm documentation](http://elm-lang.org:1234/guide/reactivity#signals) for details on usage and principles.
 
 ## PureScript Usage Patterns
 
