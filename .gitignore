@@ -3,3 +3,4 @@
 /.psci
 /.browserify-cache.json
 /.psci_modules/
+*.tix
