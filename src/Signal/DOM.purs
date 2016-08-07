@@ -12,7 +12,7 @@ module Signal.DOM
   ) where
 
 import Control.Monad.Eff (Eff)
-import Control.Timer (TIMER)
+import Control.Monad.Eff.Timer (TIMER)
 import DOM (DOM)
 import Prelude (($), bind, pure)
 import Signal (constant, Signal, (~>))

@@ -9,9 +9,9 @@ module Signal.Time
   , second
   ) where
 
-import Control.Monad.Eff (Eff)
-import Control.Timer (TIMER)
 import Prelude
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Timer (TIMER)
 import Signal (Signal, sampleOn, dropRepeats, filter, constant)
 
 type Time = Number

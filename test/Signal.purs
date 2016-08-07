@@ -8,11 +8,12 @@ import Control.Monad.Aff (makeAff)
 import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff.Exception (error)
 import Control.Monad.Eff.Ref (REF, writeRef, readRef, newRef)
+import Control.Monad.Eff.Timer (TIMER)
 import Data.Function.Uncurried (Fn4, runFn4)
 import Data.List (List(..), fromFoldable, toUnfoldable)
 import Prelude (class Show, class Eq, bind, ($), show, (<>), (/=), unit)
 import Signal (Signal, constant, (~>), runSignal)
-import Test.Unit (Test, timeout, TIMER)
+import Test.Unit (Test, timeout)
 
 expectFn :: forall e a. (Eq a, Show a) => Signal a -> Array a -> Test (ref :: REF | e)
 expectFn sig vals = makeAff \fail win -> do
