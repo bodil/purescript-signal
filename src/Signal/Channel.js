@@ -10,7 +10,7 @@ exports.channelP =
   };
 
 exports.sendP =
-  function sendP(chan, v) {
+  function sendP(chan) {
     return function(v) {
       return function() {
         chan.set(v);
