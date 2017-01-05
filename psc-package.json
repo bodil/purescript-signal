@@ -1,0 +1,12 @@
+{
+    "name": "purescript-signal",
+    "set": "psc-0.10.4",
+    "source": "https://github.com/purescript/package-sets.git",
+    "depends": [
+        "js-timers",
+        "foldable-traversable",
+        "maybe",
+        "dom",
+        "prelude"
+    ]
+}
