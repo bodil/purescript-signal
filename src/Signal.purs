@@ -30,6 +30,7 @@ import Prelude
 import Control.Monad.Eff (Eff())
 import Data.Foldable (fold, foldl, class Foldable)
 import Data.Maybe (Maybe(..), fromMaybe, isJust)
+import Data.Monoid (class Monoid, mempty)
 
 foreign import data Signal :: * -> *
 
@@ -111,6 +112,9 @@ instance applicativeSignal :: Applicative Signal where
 
 instance semigroupSignal :: Semigroup (Signal a) where
   append = merge
+
+instance monoidSignal :: Monoid a => Monoid (Signal a) where
+	mempty = constant mempty
 
 infixl 4 squigglyMap as <~
 infixl 4 squigglyApply as ~

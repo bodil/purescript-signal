@@ -10,7 +10,8 @@
     "purescript-prelude": "^2.1.0",
     "purescript-foldable-traversable": "^2.0.0",
     "purescript-maybe": "^2.0.0",
-    "purescript-js-timers": "^2.0.0"
+    "purescript-js-timers": "^2.0.0",
+    "purescript-monoid": "^2.2.0"
   },
   "license": "Apache-2.0",
   "devDependencies": {
