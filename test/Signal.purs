@@ -15,7 +15,7 @@ import Prelude (class Show, class Eq, bind, ($), show, (<>), (/=), unit)
 import Signal (Signal, constant, (~>), runSignal)
 import Test.Unit (Test, timeout)
 
-expectFn :: forall e a. (Eq a, Show a) => Signal a -> Array a -> Test (ref :: REF | e)
+expectFn :: forall e a. Eq a => Show a => Signal a -> Array a -> Test (ref :: REF | e)
 expectFn sig vals = makeAff \fail win -> do
   remaining <- newRef vals
   let getNext val = do
@@ -30,7 +30,7 @@ expectFn sig vals = makeAff \fail win -> do
           Nil -> fail $ error "unexpected emptiness"
   runSignal $ sig ~> getNext
 
-expect :: forall e a. (Eq a, Show a) => Int -> Signal a -> Array a -> Test (ref :: REF, timer :: TIMER, avar :: AVAR | e)
+expect :: forall e a. Eq a => Show a => Int -> Signal a -> Array a -> Test (ref :: REF, timer :: TIMER, avar :: AVAR | e)
 expect time sig vals = timeout time $ expectFn sig vals
 
 foreign import tickP :: forall a c. Fn4 (c -> Signal c) Int Int (Array a) (Signal a)

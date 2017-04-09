@@ -6,13 +6,13 @@ module Signal.Channel
   , CHANNEL
   ) where
 
-import Control.Monad.Eff (Eff)
+import Control.Monad.Eff (Eff, kind Effect)
 import Prelude (Unit)
 
 import Signal (constant, Signal)
 
-foreign import data Channel :: * -> *
-foreign import data CHANNEL :: !
+foreign import data Channel :: Type -> Type
+foreign import data CHANNEL :: Effect
 
 foreign import channelP :: forall a c e. (c -> Signal c) -> a -> Eff (channel :: CHANNEL | e) (Channel a)
 
