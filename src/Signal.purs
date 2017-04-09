@@ -32,7 +32,7 @@ import Data.Foldable (fold, foldl, class Foldable)
 import Data.Maybe (Maybe(..), fromMaybe, isJust)
 import Data.Monoid (class Monoid, mempty)
 
-foreign import data Signal :: * -> *
+foreign import data Signal :: Type -> Type
 
 -- |Creates a signal with a constant value.
 foreign import constant :: forall a. a -> Signal a
@@ -48,7 +48,7 @@ foreign import merge :: forall a. (Signal a) -> (Signal a) -> (Signal a)
 -- |Merge all signals inside a `Foldable`, returning a `Maybe` which will
 -- |either contain the resulting signal, or `Nothing` if the `Foldable`
 -- |was empty.
-mergeMany :: forall f a. (Functor f, Foldable f) => f (Signal a) -> Maybe (Signal a)
+mergeMany :: forall f a. Functor f => Foldable f => f (Signal a) -> Maybe (Signal a)
 mergeMany sigs = foldl mergeMaybe Nothing (Just <$> sigs)
   where mergeMaybe a Nothing = a
         mergeMaybe Nothing a = a
@@ -98,7 +98,7 @@ foreign import flattenArray :: forall a. Signal (Array a) -> a -> Signal a
 
 -- |Turns a signal of collections of items into a signal of each item inside
 -- |each collection, in order.
-flatten :: forall a f. (Functor f, Foldable f) => Signal (f a) -> a -> Signal a
+flatten :: forall a f. Functor f => Foldable f => Signal (f a) -> a -> Signal a
 flatten sig = flattenArray (sig ~> map (\i -> [i]) >>> fold)
 
 instance functorSignal :: Functor Signal where
@@ -114,7 +114,7 @@ instance semigroupSignal :: Semigroup (Signal a) where
   append = merge
 
 instance monoidSignal :: Monoid a => Monoid (Signal a) where
-	mempty = constant mempty
+  mempty = constant mempty
 
 infixl 4 squigglyMap as <~
 infixl 4 squigglyApply as ~

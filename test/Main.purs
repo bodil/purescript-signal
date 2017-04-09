@@ -1,7 +1,8 @@
 module Test.Main where
 
 import Prelude
-import Control.Monad.Aff (Aff, later', forkAff)
+import Control.Monad.Aff (Aff, forkAff)
+import Control.Monad.Aff as Aff
 import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
@@ -9,6 +10,7 @@ import Control.Monad.Eff.Console (CONSOLE)
 import Control.Monad.Eff.Ref (REF)
 import Control.Monad.Eff.Timer (TIMER)
 import Data.Maybe (Maybe(..), fromMaybe)
+import Data.Time.Duration (Milliseconds(..))
 import Data.Tuple (Tuple(..))
 import Signal ((~>), runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany, flatten)
 import Signal.Channel (subscribe, send, channel, CHANNEL)
@@ -78,16 +80,18 @@ main = runTest do
     let sig = debounce 10.0 $ subscribe chan
         send' = liftEff <<< send chan
 
-    forkAff $ expect 50 sig [0,2,4]
-    wait 20
+    _ <- forkAff $ expect 50 sig [0,2,4]
+    wait 20.0
     send' 1
-    wait 5
+    wait 5.0
     send' 2
-    wait 20
+    wait 20.0
     send' 3
-    wait 5
+    wait 5.0
     send' 4
-    wait 20
+    wait 20.0
 
-wait :: forall e. Int -> Aff e Unit
-wait t = later' t $ pure unit
+wait :: forall e. Number -> Aff e Unit
+wait t = do
+  Aff.delay $ Milliseconds t
+  pure unit
