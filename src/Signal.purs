@@ -101,6 +101,14 @@ foreign import flattenArray :: forall a. Signal (Array a) -> a -> Signal a
 flatten :: forall a f. Functor f => Foldable f => Signal (f a) -> a -> Signal a
 flatten sig = flattenArray (sig ~> map (\i -> [i]) >>> fold)
 
+foreign import snoop """
+  function snoop(sig) {
+    return function() {
+      sig.subscribe(function(val) {console.log(val);});
+      return sig;
+    };
+  }""" :: forall e a. Signal a -> Eff e (Signal a)
+
 instance functorSignal :: Functor Signal where
   map = mapSig
 
