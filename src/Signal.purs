@@ -9,6 +9,7 @@ module Signal
   , dropRepeats'
   , runSignal
   , unwrap
+  , get
   , filter
   , filterMap
   , flatten
@@ -80,6 +81,9 @@ foreign import runSignal :: forall e. Signal (Eff e Unit) -> Eff e Unit
 -- |signal which will take each effect produced by the input signal, run it,
 -- |and yield its returned value.
 foreign import unwrap :: forall e a. Signal (Eff e a) -> Eff e (Signal a)
+
+-- | Get the curren value of the signal.
+foreign import get :: forall e a. Signal a -> Eff e a
 
 -- |Takes a signal and filters out yielded values for which the provided
 -- |predicate function returns `false`.

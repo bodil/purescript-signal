@@ -1,18 +1,20 @@
 module Test.Main where
 
 import Prelude
-import Control.Monad.Aff (Aff, forkAff)
 import Control.Monad.Aff as Aff
+import Control.Monad.Aff (Aff, forkAff)
 import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
 import Control.Monad.Eff.Console (CONSOLE)
+import Control.Monad.Eff.Exception (error)
 import Control.Monad.Eff.Ref (REF)
 import Control.Monad.Eff.Timer (TIMER)
+import Data.Foreign (fail)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Time.Duration (Milliseconds(..))
 import Data.Tuple (Tuple(..))
-import Signal ((~>), runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany, flatten)
+import Signal (constant, dropRepeats, filter, filterMap, flatten, foldp, get, mergeMany, runSignal, sampleOn, (<~), (~), (~>))
 import Signal.Channel (subscribe, send, channel, CHANNEL)
 import Signal.Time (since, delay, every, debounce)
 import Test.Signal (tick, expect, expectFn)
@@ -90,6 +92,14 @@ main = runTest do
     wait 5.0
     send' 4
     wait 20.0
+
+  test "get gets the current value" do
+    let sig = constant "example"
+    Aff.makeAff $ \fail win -> do
+      val <- get sig
+      if (val == "example")
+        then win unit
+        else fail (error ("Expected get sig to return \"example\" but got " <> val))
 
 wait :: forall e. Number -> Aff e Unit
 wait t = do
