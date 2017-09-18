@@ -80,7 +80,7 @@ main = runTest do
     let sig = debounce 10.0 $ subscribe chan
         send' = liftEff <<< send chan
 
-    _ <- forkAff $ expect 50 sig [0,2,4]
+    _ <- forkAff $ expect 100 sig [0,2,4]
     wait 20.0
     send' 1
     wait 5.0
