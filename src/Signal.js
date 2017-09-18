@@ -61,6 +61,20 @@ exports.foldp = function(fun) {
   };
 };
 
+exports.foldpE = function (fun) {
+  return function (seed) {
+    return function (sig) {
+      var acc = seed;
+      var out = make(acc);
+      sig.subscribe(function (val) {
+        acc = fun(val)(acc)();
+        out.set(acc);
+      });
+      return out;
+    };
+  };
+};
+
 exports.sampleOn = function(sig1) {
   return function(sig2) {
     var out = make(sig2.get());

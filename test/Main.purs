@@ -14,7 +14,7 @@ import Data.Either (either)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Time.Duration (Milliseconds(..))
 import Data.Tuple (Tuple(..))
-import Signal ((~>), runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany, flatten)
+import Signal ((~>), runSignal, filterMap, filter, foldp, foldpE, (~), (<~), dropRepeats, sampleOn, constant, mergeMany, flatten)
 import Signal.Channel (subscribe, send, channel, CHANNEL)
 import Signal.Time (since, delay, every, debounce)
 import Test.Signal (tick, expect, expectFn)
@@ -59,6 +59,9 @@ main = runAndExit $ runTestWith runTest do
 
   test "sum up values with foldp" do
     expect 50 (foldp (+) 0 $ tick 1 1 [1, 2, 3, 4, 5]) [1, 3, 6, 10, 15]
+
+  test "sum up values with foldpE" do
+    expect 50 (foldpE (\a b -> pure (a + b)) 0 $ tick 1 1 [1, 2, 3, 4, 5]) [1, 3, 6, 10, 15]
 
   test "filter values with filter" do
     expect 50 (filter (\n -> n < 5) 0 $ tick 1 1 [5, 3, 8, 4]) [0, 3, 4]

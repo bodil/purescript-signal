@@ -4,6 +4,7 @@ module Signal
   , merge
   , mergeMany
   , foldp
+  , foldpE
   , sampleOn
   , dropRepeats
   , dropRepeats'
@@ -58,6 +59,12 @@ mergeMany sigs = foldl mergeMaybe Nothing (Just <$> sigs)
 -- |the input signal, and the previous value of the output signal, to produce
 -- |the new value of the output signal.
 foreign import foldp :: forall a b. (a -> b -> b) -> b -> (Signal a) -> (Signal b)
+
+-- |Creates a past dependent signal with an effectful computation. The function 
+-- |argument takes the value of  the input signal, and the previous value of the 
+-- |output signal, to produce the new value of the output signal wraped inside an 
+-- |`Eff` action.
+foreign import foldpE :: forall a b e. (a -> b -> Eff e b) -> b -> (Signal a) -> (Signal b)
 
 -- |Creates a signal which yields the current value of the second signal every
 -- |time the first signal yields.
