@@ -17,3 +17,15 @@ exports.tickP = function tickP(constant, initial, interval, values) {
 exports.incEff = function (val) {
   return function () { return val + 1; };
 };
+
+exports.incAffP = function (right) {
+  return function (val) {
+    return function (callback) {
+      return function () {
+        setTimeout(function () {
+          callback(right(val + 1))();
+        }, 0);
+      };
+    };
+  };
+};

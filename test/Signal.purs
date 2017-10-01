@@ -1,15 +1,16 @@
 module Test.Signal
   ( expect
   , expectFn
+  , incAff
   , incEff
   , tick
   ) where
 
 import Prelude
-import Control.Monad.Aff (makeAff, nonCanceler)
+import Control.Monad.Aff (Aff, Canceler, makeAff, nonCanceler)
 import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (error)
+import Control.Monad.Eff.Exception (Error, error)
 import Control.Monad.Eff.Ref (REF, writeRef, readRef, newRef)
 import Control.Monad.Eff.Timer (TIMER)
 import Data.Either (Either(..))
@@ -43,3 +44,8 @@ tick :: forall a. Int -> Int -> Array a -> Signal a
 tick = runFn4 tickP constant
 
 foreign import incEff :: forall e. Int -> Eff e Int
+
+foreign import incAffP :: forall e. (Int -> Either Error Int) -> Int -> (Either Error Int -> Eff e Unit) -> Eff e (Canceler e)
+
+incAff :: forall e. Int -> Aff e Int
+incAff val = makeAff (incAffP Right val)
