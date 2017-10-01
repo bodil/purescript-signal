@@ -1,7 +1,7 @@
 // module Signal.Aff
 
-exports.signalAffP =
-  function signalAffP(runAff_) {
+exports.mapAffP =
+  function mapAffP(runAff_) {
     return function (mkChannel) {
       return function (sendEither) {
         return function (action) {

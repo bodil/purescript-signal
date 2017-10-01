@@ -1,7 +1,7 @@
 // module Signal.Eff
 
-exports.signalEffP =
-  function signalEffP(channel) {
+exports.mapEffP =
+  function mapEffP(channel) {
     return function (send) {
       return function (action) {
         return function () {
