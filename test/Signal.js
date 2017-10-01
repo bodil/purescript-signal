@@ -12,4 +12,8 @@ exports.tickP = function tickP(constant, initial, interval, values) {
     }, initial);
   }
   return out;
-}
+};
+
+exports.incEff = function (val) {
+  return function () { return val + 1; };
+};

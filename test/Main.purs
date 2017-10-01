@@ -16,8 +16,9 @@ import Data.Time.Duration (Milliseconds(..))
 import Data.Tuple (Tuple(..))
 import Signal ((~>), runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany, flatten)
 import Signal.Channel (subscribe, send, channel, CHANNEL)
+import Signal.Eff (signalEff)
 import Signal.Time (since, delay, every, debounce)
-import Test.Signal (tick, expect, expectFn)
+import Test.Signal (expect, expectFn, incEff, tick)
 import Test.Unit (test, timeout)
 import Test.Unit.Console (TESTOUTPUT)
 import Test.Unit.Main (exit, runTestWith)
@@ -46,6 +47,10 @@ main = runAndExit $ runTestWith runTest do
 
   test "map function over signal" do
     expect 50 (tick 1 1 [1, 2, 3] ~> \x -> x * 2) [2, 4, 6]
+
+  test "map effectful function over signal" do
+    signalConverter <- liftEff $ signalEff incEff
+    expect 50 (signalConverter $ tick 1 1 [1, 2, 3]) [2, 3, 4]
 
   test "sampleOn samples values from sig2 when sig1 changes" do
     expect 150 (sampleOn (every 40.0) $ tick 10 20 [1, 2, 3, 4, 5, 6]) [1, 3, 5, 6]

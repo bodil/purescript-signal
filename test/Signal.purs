@@ -1,12 +1,14 @@
 module Test.Signal
   ( expect
   , expectFn
+  , incEff
   , tick
   ) where
 
 import Prelude
 import Control.Monad.Aff (makeAff, nonCanceler)
 import Control.Monad.Aff.AVar (AVAR)
+import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Exception (error)
 import Control.Monad.Eff.Ref (REF, writeRef, readRef, newRef)
 import Control.Monad.Eff.Timer (TIMER)
@@ -39,3 +41,5 @@ foreign import tickP :: forall a c. Fn4 (c -> Signal c) Int Int (Array a) (Signa
 
 tick :: forall a. Int -> Int -> Array a -> Signal a
 tick = runFn4 tickP constant
+
+foreign import incEff :: forall e. Int -> Eff e Int
