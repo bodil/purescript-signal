@@ -6,7 +6,6 @@
         "js-timers",
         "foldable-traversable",
         "maybe",
-        "dom",
         "prelude"
     ]
 }

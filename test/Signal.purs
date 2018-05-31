@@ -5,34 +5,37 @@ module Test.Signal
   ) where
 
 import Prelude
-import Control.Monad.Aff (makeAff, nonCanceler)
-import Control.Monad.Aff.AVar (AVAR)
-import Control.Monad.Eff.Exception (error)
-import Control.Monad.Eff.Ref (REF, writeRef, readRef, newRef)
-import Control.Monad.Eff.Timer (TIMER)
+import Effect.Aff (makeAff, nonCanceler)
+import Effect.Exception (error)
+import Effect.Ref (Ref, write, read, new)
 import Data.Either (Either(..))
 import Data.Function.Uncurried (Fn4, runFn4)
 import Data.List (List(..), fromFoldable, toUnfoldable)
 import Signal (Signal, constant, (~>), runSignal)
 import Test.Unit (Test, timeout)
 
-expectFn :: forall e a. Eq a => Show a => Signal a -> Array a -> Test (ref :: REF | e)
+
+type Tail a = Ref (Array a)
+
+expectFn :: forall a. Eq a => Show a => Signal a -> Array a -> Test
 expectFn sig vals = makeAff \resolve -> do
-  remaining <- newRef vals
+  remaining <- new vals
   let getNext val = do
-        nextValArray <- readRef remaining
+        nextValArray <- read remaining
         let nextVals = fromFoldable nextValArray
         case nextVals of
           Cons x xs -> do
             if x /= val then resolve $ Left $ error $ "expected " <> show x <> " but got " <> show val
               else case xs of
                 Nil -> resolve $ Right unit
-                _ -> writeRef remaining (toUnfoldable xs)
+                _ ->
+                  -- write remaining (toUnfoldable xs)
+                  write (toUnfoldable xs) remaining 
           Nil -> resolve $ Left $ error "unexpected emptiness"
   runSignal $ sig ~> getNext
   pure nonCanceler
 
-expect :: forall e a. Eq a => Show a => Int -> Signal a -> Array a -> Test (ref :: REF, timer :: TIMER, avar :: AVAR | e)
+expect :: forall a. Eq a => Show a => Int -> Signal a -> Array a -> Test
 expect time sig vals = timeout time $ expectFn sig vals
 
 foreign import tickP :: forall a c. Fn4 (c -> Signal c) Int Int (Array a) (Signal a)

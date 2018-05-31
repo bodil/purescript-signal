@@ -3,27 +3,26 @@ module Signal.Channel
   , send
   , subscribe
   , Channel
-  , CHANNEL
   ) where
 
-import Control.Monad.Eff (Eff, kind Effect)
+
+import Effect (Effect)
 import Prelude (Unit)
 
 import Signal (constant, Signal)
 
 foreign import data Channel :: Type -> Type
-foreign import data CHANNEL :: Effect
 
-foreign import channelP :: forall a c e. (c -> Signal c) -> a -> Eff (channel :: CHANNEL | e) (Channel a)
+foreign import channelP :: forall a c. (c -> Signal c) -> a -> Effect (Channel a)
 
 -- |Creates a channel, which allows you to feed arbitrary values into a signal.
-channel :: forall a e. a -> Eff (channel :: CHANNEL | e) (Channel a)
+channel :: forall a. a -> Effect (Channel a)
 channel = channelP constant
 
-foreign import sendP :: forall a e. (Channel a) -> a -> Eff (channel :: CHANNEL | e) Unit
+foreign import sendP :: forall a. (Channel a) -> a -> Effect Unit
 
 -- |Sends a value to a given channel.
-send :: forall a e. Channel a -> a -> Eff (channel :: CHANNEL | e) Unit
+send :: forall a. Channel a -> a -> Effect Unit
 send = sendP
 
 -- |Takes a channel and returns a signal of the values sent to it.

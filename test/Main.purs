@@ -2,35 +2,30 @@ module Test.Main where
 
 import Prelude
 
-import Control.Monad.Aff (Aff, forkAff, runAff)
-import Control.Monad.Aff as Aff
-import Control.Monad.Aff.AVar (AVAR)
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Class (liftEff)
-import Control.Monad.Eff.Console (CONSOLE)
-import Control.Monad.Eff.Ref (REF)
-import Control.Monad.Eff.Timer (TIMER)
+import Effect.Aff (Aff, forkAff, runAff)
+import Effect.Aff as Aff
+import Effect (Effect)
+import Effect.Class (liftEffect)
 import Data.Either (either)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Time.Duration (Milliseconds(..))
 import Data.Tuple (Tuple(..))
 import Signal ((~>), runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany, flatten)
-import Signal.Channel (subscribe, send, channel, CHANNEL)
+import Signal.Channel (subscribe, send, channel)
 import Signal.Time (since, delay, every, debounce)
 import Test.Signal (tick, expect, expectFn)
 import Test.Unit (test, timeout)
-import Test.Unit.Console (TESTOUTPUT)
 import Test.Unit.Main (exit, runTestWith)
 import Test.Unit.Output.Fancy (runTest)
 
-runAndExit :: forall e. Aff (console :: CONSOLE | e) Unit -> Eff (console :: CONSOLE | e) Unit
+runAndExit :: Aff Unit -> Effect Unit
 runAndExit e = do
   _ <- runAff (either errorHandler successHandler) e
   pure unit
   where errorHandler _ = exit 1
         successHandler _ = exit 0
 
-main :: forall e. Eff (testOutput :: TESTOUTPUT, timer :: TIMER, ref :: REF, avar :: AVAR, channel :: CHANNEL, console :: CONSOLE | e) Unit
+main :: Effect Unit
 main = runAndExit $ runTestWith runTest do
 
   test "subscribe to constant must yield once" do
@@ -75,8 +70,8 @@ main = runAndExit $ runTestWith runTest do
 
   test "channel subscriptions yield when we send to the channel" do
     timeout 50 $ do
-      chan <- liftEff $ channel 1
-      liftEff $ runSignal $ tick 1 1 [2, 3, 4] ~> send chan
+      chan <- liftEffect $ channel 1
+      liftEffect $ runSignal $ tick 1 1 [2, 3, 4] ~> send chan
       expectFn (subscribe chan) [2, 3, 4]
 
   test "delayed signal yields same values" do
@@ -86,9 +81,9 @@ main = runAndExit $ runTestWith runTest do
     expect 25 (since 10.0 $ tick 1 1 [1, 2, 3]) [false, true, false]
 
   test "debounce yields only the most recent value in a series shorter than the interval" do
-    chan <- liftEff $ channel 0
+    chan <- liftEffect $ channel 0
     let sig = debounce 10.0 $ subscribe chan
-        send' = liftEff <<< send chan
+        send' = liftEffect <<< send chan
 
     _ <- forkAff $ expect 100 sig [0,2,4]
     wait 20.0
@@ -101,7 +96,7 @@ main = runAndExit $ runTestWith runTest do
     send' 4
     wait 20.0
 
-wait :: forall e. Number -> Aff e Unit
+wait :: Number -> Aff Unit
 wait t = do
   Aff.delay $ Milliseconds t
   pure unit
