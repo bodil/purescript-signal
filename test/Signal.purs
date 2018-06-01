@@ -29,7 +29,6 @@ expectFn sig vals = makeAff \resolve -> do
               else case xs of
                 Nil -> resolve $ Right unit
                 _ ->
-                  -- write remaining (toUnfoldable xs)
                   write (toUnfoldable xs) remaining 
           Nil -> resolve $ Left $ error "unexpected emptiness"
   runSignal $ sig ~> getNext
