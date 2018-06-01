@@ -42,7 +42,7 @@ mouseButton = mouseButtonP constant
 -- |Creates a signal which will be `true` when the given mouse button is
 -- |pressed, and `false` when it's released.
 -- |note: in IE8 and earlier you need to use MouseIE8MiddleButton if you want to query the middle button
-mouseButtonPressed :: forall e. MouseButton -> Eff (dom :: DOM | e) (Signal Boolean)
+mouseButtonPressed :: MouseButton -> Effect (Signal Boolean)
 mouseButtonPressed btn = mouseButton buttonNumber
   where 
     buttonNumber = case btn of
