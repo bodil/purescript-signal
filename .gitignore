@@ -5,3 +5,4 @@
 /.psci_modules/
 *.tix
 /.psc-package
+.psc-ide-port
