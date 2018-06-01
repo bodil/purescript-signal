@@ -2,18 +2,20 @@ module Test.Main where
 
 import Prelude
 
-import Effect.Aff (Aff, forkAff, runAff)
-import Effect.Aff as Aff
-import Effect (Effect)
-import Effect.Class (liftEffect)
 import Data.Either (either)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Time.Duration (Milliseconds(..))
 import Data.Tuple (Tuple(..))
+import Effect (Effect)
+import Effect.Aff (Aff, forkAff, runAff)
+import Effect.Aff as Aff
+import Effect.Class (liftEffect)
 import Signal ((~>), runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany, flatten)
+import Signal.Aff (mapAff)
 import Signal.Channel (subscribe, send, channel)
+import Signal.Effect (mapEffect)
 import Signal.Time (since, delay, every, debounce)
-import Test.Signal (tick, expect, expectFn)
+import Test.Signal (expect, expectFn, incAff, incEff, tick)
 import Test.Unit (test, timeout)
 import Test.Unit.Main (exit, runTestWith)
 import Test.Unit.Output.Fancy (runTest)
@@ -41,6 +43,14 @@ main = runAndExit $ runTestWith runTest do
 
   test "map function over signal" do
     expect 50 (tick 1 1 [1, 2, 3] ~> \x -> x * 2) [2, 4, 6]
+
+  test "map effectful function over signal" do
+    signalConverter <- liftEffect $ mapEffect incEff
+    expect 50 (signalConverter $ tick 1 1 [1, 2, 3]) [2, 3, 4]
+
+  test "map asynchronous effect over signal" do
+    signalConverter <- liftEffect $ mapAff incAff
+    expect 150 (signalConverter $ tick 1 1 [1, 2, 3]) [Nothing, Just 2, Just 3, Just 4]
 
   test "sampleOn samples values from sig2 when sig1 changes" do
     expect 150 (sampleOn (every 40.0) $ tick 10 20 [1, 2, 3, 4, 5, 6]) [1, 3, 5, 6]

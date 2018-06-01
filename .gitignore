@@ -6,3 +6,4 @@
 *.tix
 /.psc-package
 .psc-ide-port
+.vscode/

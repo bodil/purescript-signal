@@ -30,7 +30,6 @@ import Prelude
 import Effect (Effect())
 import Data.Foldable (fold, foldl, class Foldable)
 import Data.Maybe (Maybe(..), fromMaybe, isJust)
-import Data.Monoid (class Monoid, mempty)
 
 foreign import data Signal :: Type -> Type
 
@@ -74,12 +73,12 @@ foreign import dropRepeats' :: forall a. (Signal a) -> (Signal a)
 
 -- |Given a signal of effects with no return value, run each effect as it
 -- |comes in.
-foreign import runSignal :: forall e. Signal (Effect Unit) -> Effect Unit
+foreign import runSignal :: Signal (Effect Unit) -> Effect Unit
 
 -- |Takes a signal of effects of `a`, and produces an effect which returns a
 -- |signal which will take each effect produced by the input signal, run it,
 -- |and yield its returned value.
-foreign import unwrap :: forall e a. Signal (Effect a) -> Effect (Signal a)
+foreign import unwrap :: forall a . Signal (Effect a) -> Effect (Signal a)
 
 -- |Takes a signal and filters out yielded values for which the provided
 -- |predicate function returns `false`.
