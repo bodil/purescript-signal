@@ -2,6 +2,7 @@ module Signal.DOM
   ( animationFrame
   , keyPressed
   , mouseButton
+  , mouseButtonPressed
   , touch
   , tap
   , mousePos
@@ -9,6 +10,7 @@ module Signal.DOM
   , CoordinatePair(..)
   , DimensionPair(..)
   , Touch(..)
+  , MouseButton (..)
   ) where
 
 
@@ -19,6 +21,7 @@ import Signal.Time (now, Time)
 
 type CoordinatePair = { x :: Int, y :: Int }
 type DimensionPair  = { w :: Int, h :: Int }
+data MouseButton = MouseLeftButton | MouseMiddleButton | MouseIE8MiddleButton | MouseRightButton
 
 foreign import keyPressedP :: forall c. (c -> Signal c) -> Int -> Effect (Signal Boolean)
 
@@ -29,10 +32,24 @@ keyPressed = keyPressedP constant
 
 foreign import mouseButtonP :: forall c. (c -> Signal c) -> Int -> Effect (Signal Boolean)
 
+
 -- |Creates a signal which will be `true` when the given mouse button is
 -- |pressed, and `false` when it's released.
 mouseButton :: Int -> Effect(Signal Boolean)
 mouseButton = mouseButtonP constant
+
+
+-- |Creates a signal which will be `true` when the given mouse button is
+-- |pressed, and `false` when it's released.
+-- |note: in IE8 and earlier you need to use MouseIE8MiddleButton if you want to query the middle button
+mouseButtonPressed :: forall e. MouseButton -> Eff (dom :: DOM | e) (Signal Boolean)
+mouseButtonPressed btn = mouseButton buttonNumber
+  where 
+    buttonNumber = case btn of
+      MouseLeftButton      -> 0
+      MouseRightButton     -> 2
+      MouseMiddleButton    -> 1
+      MouseIE8MiddleButton -> 4
 
 type Touch = { id :: String
              , screenX :: Int, screenY :: Int
