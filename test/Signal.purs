@@ -1,16 +1,20 @@
 module Test.Signal
   ( expect
   , expectFn
+  , incAff
+  , incEff
   , tick
   ) where
 
 import Prelude
-import Effect.Aff (makeAff, nonCanceler)
-import Effect.Exception (error)
-import Effect.Ref (Ref, write, read, new)
+
 import Data.Either (Either(..))
 import Data.Function.Uncurried (Fn4, runFn4)
 import Data.List (List(..), fromFoldable, toUnfoldable)
+import Effect (Effect)
+import Effect.Aff (Aff, Canceler, Error, makeAff, nonCanceler)
+import Effect.Exception (error)
+import Effect.Ref (Ref, write, read, new)
 import Signal (Signal, constant, (~>), runSignal)
 import Test.Unit (Test, timeout)
 
@@ -41,3 +45,10 @@ foreign import tickP :: forall a c. Fn4 (c -> Signal c) Int Int (Array a) (Signa
 
 tick :: forall a. Int -> Int -> Array a -> Signal a
 tick = runFn4 tickP constant
+
+foreign import incEff :: Int -> Effect Int
+
+foreign import incAffP :: (Int -> Either Error Int) -> Int -> (Either Error Int -> Effect Unit) -> Effect Canceler
+
+incAff :: Int -> Aff Int
+incAff val = makeAff (incAffP Right val)
