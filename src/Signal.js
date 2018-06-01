@@ -146,3 +146,9 @@ exports.flattenArray = function(sig) {
     return out;
   };
 };
+
+exports.get = function(sig) {
+  return function() {
+    return sig.get();
+  };
+};

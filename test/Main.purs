@@ -2,15 +2,16 @@ module Test.Main where
 
 import Prelude
 
-import Data.Either (either)
+import Data.Either (Either(..), either)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Time.Duration (Milliseconds(..))
 import Data.Tuple (Tuple(..))
 import Effect (Effect)
-import Effect.Aff (Aff, forkAff, runAff)
+import Effect.Aff (Aff, forkAff, makeAff, nonCanceler, runAff)
 import Effect.Aff as Aff
 import Effect.Class (liftEffect)
-import Signal ((~>), runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany, flatten)
+import Effect.Exception (error)
+import Signal ((~>), get, runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany, flatten)
 import Signal.Aff (mapAff)
 import Signal.Channel (subscribe, send, channel)
 import Signal.Effect (mapEffect)
@@ -105,6 +106,15 @@ main = runAndExit $ runTestWith runTest do
     wait 5.0
     send' 4
     wait 20.0
+
+  test "get gets the current value" do
+    let sig = constant "example"
+    makeAff $ \resolve -> do
+      val <- liftEffect $ get sig
+      if (val == "example")
+        then resolve $ Right unit
+        else resolve $ Left $ error ("Expected get sig to return \"example\" but got " <> val)
+      pure nonCanceler
 
 wait :: Number -> Aff Unit
 wait t = do
