@@ -14,7 +14,7 @@ import Effect.Exception (error)
 import Signal ((~>), get, runSignal, filterMap, filter, foldp, (~), (<~), dropRepeats, sampleOn, constant, mergeMany, flatten)
 import Signal.Aff (mapAff)
 import Signal.Channel (subscribe, send, channel)
-import Signal.Effect (mapEffect)
+import Signal.Effect (foldEffect, mapEffect)
 import Signal.Time (since, delay, every, debounce)
 import Test.Signal (expect, expectFn, incAff, incEff, tick)
 import Test.Unit (test, timeout)
@@ -52,6 +52,10 @@ main = runAndExit $ runTestWith runTest do
   test "map asynchronous effect over signal" do
     signalConverter <- liftEffect $ mapAff incAff
     expect 150 (signalConverter $ tick 1 1 [1, 2, 3]) [Nothing, Just 2, Just 3, Just 4]
+
+  test "sum up values with foldEffect" do
+    foldEff <- liftEffect $ foldEffect (\a b -> pure (a + b)) 0 $ tick 1 1 [1, 2, 3, 4, 5]
+    expect 50 foldEff [1, 3, 6, 10, 15]    
 
   test "sampleOn samples values from sig2 when sig1 changes" do
     expect 150 (sampleOn (every 40.0) $ tick 10 20 [1, 2, 3, 4, 5, 6]) [1, 3, 5, 6]

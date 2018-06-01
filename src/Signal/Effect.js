@@ -17,3 +17,21 @@ exports.mapEffectP =
       };
     };
   };
+
+exports.foldEffectP = function (make) {
+  return function (fun) {
+    return function (seed) {
+      return function (sig) {
+        return function () {
+          var acc = seed;
+          var out = make(acc);
+          sig.subscribe(function (val) {
+            acc = fun(val)(acc)();
+            out.set(acc);
+          });
+          return out;
+        };
+      };
+    };
+  };
+};
