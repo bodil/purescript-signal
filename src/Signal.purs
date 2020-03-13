@@ -70,7 +70,10 @@ foreign import dropRepeats :: forall a. (Eq a) => Signal a -> Signal a
 -- |Create a signal which only yields values which aren't equal to the previous
 -- |value of the input signal, using JavaScript's `!==` operator to determine
 -- |disequality.
-foreign import dropRepeats' :: forall a. (Signal a) -> (Signal a)
+foreign import dropRepeatsByStrictInequality :: forall a. (Signal a) -> (Signal a)
+
+dropRepeats' :: forall a. (Signal a) -> (Signal a)
+dropRepeats' = dropRepeatsByStrictInequality
 
 -- |Given a signal of effects with no return value, run each effect as it
 -- |comes in.
