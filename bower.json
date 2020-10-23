@@ -1,23 +1,30 @@
 {
-  "name": "purescript-signal",
-  "version": "10.1.0",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/bodil/purescript-signal.git"
-  },
-  "dependencies": {
-    "purescript-prelude": "^4.0.0",
-    "purescript-foldable-traversable": "^4.0.0",
-    "purescript-maybe": "^4.0.0",
-    "purescript-js-timers": "^4.0.0",
-    "purescript-aff": "^5.0.0"
-  },
-  "license": "Apache-2.0",
-  "devDependencies": {
-    "purescript-refs": "^4.1.0",
-    "purescript-functions": "^4.0.0",
-    "purescript-test-unit": "^14.0.0",
-    "purescript-lists": "^5.0.0",
-    "purescript-console": "^4.1.0"
-  }
+    "name": "purescript-signal",
+    "license": [
+        "Apache-2.0"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bodil/purescript-signal"
+    },
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "output"
+    ],
+    "dependencies": {
+        "purescript-aff": "^v5.1.2",
+        "purescript-console": "^v4.4.0",
+        "purescript-effect": "^v2.0.1",
+        "purescript-foldable-traversable": "^v4.1.1",
+        "purescript-functions": "^v4.0.0",
+        "purescript-js-timers": "^v4.0.1",
+        "purescript-lists": "^v5.4.1",
+        "purescript-maybe": "^v4.0.1",
+        "purescript-prelude": "^v4.1.1",
+        "purescript-psci-support": "^v4.0.0",
+        "purescript-refs": "^v4.1.0",
+        "purescript-test-unit": "^v15.0.0"
+    }
 }

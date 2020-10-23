@@ -2,7 +2,7 @@ node_js:
   - "node"
 language: node_js
 install:
-  - npm install -g purescript pulp bower
-  - bower install
+  - npm install --production
+  - npx spago build
 script:
-  - pulp test
+  - npx spago test
