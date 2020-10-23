@@ -10,3 +10,4 @@
 .spago/
 .purs-repl
 node_modules/
+generated-docs/
