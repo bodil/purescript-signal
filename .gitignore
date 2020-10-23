@@ -7,3 +7,6 @@
 /.psc-package
 .psc-ide-port
 .vscode/
+.spago/
+.purs-repl
+node_modules/

@@ -1,0 +1,31 @@
+{
+  "name": "purescript-signal",
+  "version": "11.0.0",
+  "description": "[![Build Status](https://travis-ci.org/bodil/purescript-signal.svg?branch=master)](https://travis-ci.org/bodil/purescript-signal)",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "spago build",
+    "test": "Spago test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bodil/purescript-signal.git"
+  },
+  "author": "Bodil Stokke",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bodil/purescript-signal/issues"
+  },
+  "homepage": "https://github.com/bodil/purescript-signal#readme",
+  "dependencies": {
+    "purescript": "^0.13.8",
+    "spago": "^0.16.0"
+  },
+  "devDependencies": {
+    "bower": "^1.8.8",
+    "pulp": "^15.0.0"
+  }
+}
