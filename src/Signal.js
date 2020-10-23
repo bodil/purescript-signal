@@ -85,7 +85,7 @@ exports.dropRepeats = function(eq) {
   };
 };
 
-exports["dropRepeats'"] = function(sig) {
+exports.dropRepeatsByStrictInequality = function(sig) {
   var val = sig.get();
   var out = make(val);
   sig.subscribe(function(newval) {
