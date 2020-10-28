@@ -111,8 +111,8 @@ exports.windowDimensionsP = function windowDimensionsP(constant) {
   });
   return function() {
     return out;
-  }
-}
+  };
+};
 
 // module Signal.DOM.Extended
 
@@ -120,11 +120,11 @@ exports.resizedP =
   function resizedP(constant) {
     return function(element) {
       var out = constant({w: element.clientWidth, h: element.clientHeight });
-      window.addEventListener("resize", function () {
+      element.addEventListener("resize", function () {
         out.set({w: element.clientWidth, h: element.clientHeight});
-      })
+      });
       return function() {
         return out;
-      }
-    }
-  }
+      };
+    };
+  };
