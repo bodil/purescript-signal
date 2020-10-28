@@ -52,6 +52,11 @@ mouseButtonPressed btn = mouseButton buttonNumber
       MouseMiddleButton    -> 1
       MouseIE8MiddleButton -> 4
 
+foreign import wheelYP :: forall c. (c -> Signal c) -> Element -> Effect (Signal Number)
+
+wheelY :: Element -> Effect (Signal Number)
+wheelY = wheelYP constant
+
 type Touch = { id :: String
              , screenX :: Int, screenY :: Int
              , clientX :: Int, clientY :: Int

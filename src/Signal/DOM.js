@@ -32,6 +32,17 @@ exports.mouseButtonP =
     };
   };
 
+exports.wheelYP =
+  function wheelYP(constant) {
+    return function(element) {
+      var out = constant(0);
+      element.addEventListener("wheel", function(e) {
+        out.set(e.deltaY);
+      });
+      return out;
+    };
+  };
+
 exports.touchP =
   function touchP(constant) {
     var out = constant([]);
