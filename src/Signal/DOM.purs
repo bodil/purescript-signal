@@ -3,9 +3,11 @@ module Signal.DOM
   , keyPressed
   , mouseButton
   , mouseButtonPressed
+  , resized
   , touch
   , tap
   , mousePos
+  , wheelY
   , windowDimensions
   , CoordinatePair(..)
   , DimensionPair(..)
