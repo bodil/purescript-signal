@@ -18,6 +18,7 @@ import Effect (Effect)
 import Prelude (($), bind, pure)
 import Signal (constant, Signal, (~>))
 import Signal.Time (now, Time)
+import Web.DOM (Element)
 
 type CoordinatePair = { x :: Int, y :: Int }
 type DimensionPair  = { w :: Int, h :: Int }
@@ -44,7 +45,7 @@ mouseButton = mouseButtonP constant
 -- |note: in IE8 and earlier you need to use MouseIE8MiddleButton if you want to query the middle button
 mouseButtonPressed :: MouseButton -> Effect (Signal Boolean)
 mouseButtonPressed btn = mouseButton buttonNumber
-  where 
+  where
     buttonNumber = case btn of
       MouseLeftButton      -> 0
       MouseRightButton     -> 2
@@ -92,3 +93,8 @@ foreign import windowDimensionsP :: forall c. (c -> Signal c) -> Effect (Signal 
 -- |A signal which contains the document window's current width and height.
 windowDimensions :: Effect (Signal DimensionPair)
 windowDimensions = windowDimensionsP constant
+
+foreign import resizedP :: forall c. (c -> Signal c) -> Element -> Effect (Signal DimensionPair)
+
+resized :: Element -> Effect (Signal DimensionPair)
+resized = resizedP constant
