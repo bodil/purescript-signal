@@ -18,6 +18,7 @@ You can edit this file as you like.
   , "psci-support"
   , "refs"
   , "test-unit"
+  , "web-dom"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]

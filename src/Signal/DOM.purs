@@ -3,9 +3,11 @@ module Signal.DOM
   , keyPressed
   , mouseButton
   , mouseButtonPressed
+  , resized
   , touch
   , tap
   , mousePos
+  , wheelY
   , windowDimensions
   , CoordinatePair(..)
   , DimensionPair(..)
@@ -18,6 +20,7 @@ import Effect (Effect)
 import Prelude (($), bind, pure)
 import Signal (constant, Signal, (~>))
 import Signal.Time (now, Time)
+import Web.DOM (Element)
 
 type CoordinatePair = { x :: Int, y :: Int }
 type DimensionPair  = { w :: Int, h :: Int }
@@ -44,12 +47,17 @@ mouseButton = mouseButtonP constant
 -- |note: in IE8 and earlier you need to use MouseIE8MiddleButton if you want to query the middle button
 mouseButtonPressed :: MouseButton -> Effect (Signal Boolean)
 mouseButtonPressed btn = mouseButton buttonNumber
-  where 
+  where
     buttonNumber = case btn of
       MouseLeftButton      -> 0
       MouseRightButton     -> 2
       MouseMiddleButton    -> 1
       MouseIE8MiddleButton -> 4
+
+foreign import wheelYP :: forall c. (c -> Signal c) -> Element -> Effect (Signal Number)
+
+wheelY :: Element -> Effect (Signal Number)
+wheelY = wheelYP constant
 
 type Touch = { id :: String
              , screenX :: Int, screenY :: Int
@@ -92,3 +100,8 @@ foreign import windowDimensionsP :: forall c. (c -> Signal c) -> Effect (Signal 
 -- |A signal which contains the document window's current width and height.
 windowDimensions :: Effect (Signal DimensionPair)
 windowDimensions = windowDimensionsP constant
+
+foreign import resizedP :: forall c. (c -> Signal c) -> Element -> Effect (Signal DimensionPair)
+
+resized :: Element -> Effect (Signal DimensionPair)
+resized = resizedP constant

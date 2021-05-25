@@ -32,6 +32,19 @@ exports.mouseButtonP =
     };
   };
 
+exports.wheelYP =
+  function wheelYP(constant) {
+    return function(element) {
+      return function() {
+        var out = constant(0);
+        element.addEventListener("wheel", function(e) {
+          out.set(e.deltaY);
+        });
+        return out;
+      };
+    };
+  };
+
 exports.touchP =
   function touchP(constant) {
     var out = constant([]);
@@ -111,5 +124,20 @@ exports.windowDimensionsP = function windowDimensionsP(constant) {
   });
   return function() {
     return out;
-  }
-}
+  };
+};
+
+// module Signal.DOM.Extended
+
+exports.resizedP =
+  function resizedP(constant) {
+    return function(element) {
+      var out = constant({w: element.clientWidth, h: element.clientHeight });
+      element.addEventListener("resize", function () {
+        out.set({w: element.clientWidth, h: element.clientHeight});
+      });
+      return function() {
+        return out;
+      };
+    };
+  };
