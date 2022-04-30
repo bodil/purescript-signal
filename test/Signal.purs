@@ -16,7 +16,7 @@ import Effect.Aff (Aff, Canceler, Error, makeAff, nonCanceler)
 import Effect.Exception (error)
 import Effect.Ref (Ref, write, read, new)
 import Signal (Signal, constant, (~>), runSignal)
-import Test.Unit (Test, timeout)
+import Test.TestUtils (Test, timeout)
 
 
 type Tail a = Ref (Array a)

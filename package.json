@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "spago build",
-    "test": "spago test"
+    "test": "spago -x test.dhall test"
   },
   "repository": {
     "type": "git",

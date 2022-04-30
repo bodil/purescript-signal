@@ -83,7 +83,8 @@ export function dropRepeatsImpl (eq) {
     var val = sig.get()
     var out = make(val)
     sig.subscribe(function (newval) {
-      if (!eq['eq'](val)(newval)) {
+      var areEqual = eq(val)(newval)
+      if (!areEqual) {
         val = newval
         out.set(val)
       }

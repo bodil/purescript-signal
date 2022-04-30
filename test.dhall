@@ -6,5 +6,13 @@ in conf // {
    conf.dependencies 
    # [ "spec" 
      , "console"
+     , "control"
+     , "datetime"
+     , "exceptions"
+     , "functions"
+     , "integers"
+     , "lists"
+     , "refs"
+     , "tuples"
      ]
 }
