@@ -7,18 +7,12 @@ You can edit this file as you like.
 , repository = "https://github.com/bodil/purescript-signal"
 , dependencies =
   [ "aff"
-  , "console"
   , "effect"
+  , "either"
   , "foldable-traversable"
-  , "functions"
-  , "js-timers"
-  , "lists"
   , "maybe"
   , "prelude"
-  , "psci-support"
-  , "refs"
-  , "test-unit"
   ]
 , packages = ./packages.dhall
-, sources = [ "src/**/*.purs", "test/**/*.purs" ]
+, sources = [ "src/**/*.purs" ]
 }

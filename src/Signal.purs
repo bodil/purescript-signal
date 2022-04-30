@@ -63,9 +63,12 @@ foreign import foldp :: forall a b. (a -> b -> b) -> b -> (Signal a) -> (Signal 
 -- |time the first signal yields.
 foreign import sampleOn :: forall a b. (Signal a) -> (Signal b) -> (Signal b)
 
+foreign import dropRepeatsImpl :: forall a. (a -> a -> Boolean) -> Signal a -> Signal a
+
 -- |Create a signal which only yields values which aren't equal to the previous
 -- |value of the input signal.
-foreign import dropRepeats :: forall a. (Eq a) => Signal a -> Signal a
+dropRepeats :: forall a. (Eq a) => Signal a -> Signal a
+dropRepeats = dropRepeatsImpl (==)
 
 -- |Create a signal which only yields values which aren't equal to the previous
 -- |value of the input signal, using JavaScript's `!==` operator to determine
