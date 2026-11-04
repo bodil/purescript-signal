@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "spago build",
-    "test": "spago -x test.dhall test"
+    "test": "spago test"
   },
   "repository": {
     "type": "git",
@@ -21,8 +21,8 @@
   },
   "homepage": "https://github.com/bodil/purescript-signal#readme",
   "dependencies": {
-    "purescript": "^0.15.0",
-    "spago": "^0.20.8"
+    "purescript": "^0.15.4",
+    "spago": "1.0.5"
   },
   "devDependencies": {
     "bower": "^1.8.8",

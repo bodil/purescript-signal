@@ -11,3 +11,4 @@
 .purs-repl
 node_modules/
 generated-docs/
+/spago.lock
